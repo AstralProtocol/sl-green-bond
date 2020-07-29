@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL
 pragma solidity 0.6.12;
 
-contract ISimpleBond {
+interface ISimpleBond {
 
   event MintedBond(address buyer, uint256 bondsAmount);
 
@@ -12,60 +12,57 @@ contract ISimpleBond {
   event Transferred(address indexed from, address indexed to, uint256[] bonds);
 
 
-  function changeLoopLimit(uint256 _loopLimit) public;
+  function changeLoopLimit(uint256 _loopLimit) external;
 
-  function mintBond(address buyer, uint256 bondsAmount) public;
+  function mintBond(address buyer, uint256 bondsAmount) external;
 
-  function redeemCoupons(uint256[] _bonds) public;
+  function redeemCoupons(uint256[] memory _bonds ) external;
 
-  function transfer(address receiver, uint256[] bonds) public;
+  function transfer(address receiver, uint256[] memory bonds) external;
 
-  function donate() public payable;
+  function donate() external payable;
 
-  //PRIVATE
-
-  function getMoney(uint256 amount, address receiver) private;
 
   //GETTERS
 
-  function getBondOwner(uint256 bond) public view returns (address);
+  function getBondOwner(uint256 bond) external view returns (address);
 
-  function getRemainingCoupons(uint256 bond) public view returns (int256);
+  function getRemainingCoupons(uint256 bond) external view returns (int256);
 
-  function getLastTimeRedeemed(uint256 bond) public view returns (uint256);
+  function getLastTimeRedeemed(uint256 bond) external view returns (uint256);
 
-  function getSimpleInterest() public view returns (uint256);
+  function getSimpleInterest() external view returns (uint256);
 
-  function getCouponsRedeemed(uint256 bond) public view returns (uint256);
+  function getCouponsRedeemed(uint256 bond) external view returns (uint256);
 
-  function getTokenAddress() public view returns (address);
+  function getTokenAddress() external view returns (address);
 
-  function getTimesToRedeem() public view returns (uint256);
+  function getTimesToRedeem() external view returns (uint256);
 
-  function getTerm() public view returns (uint256);
+  function getTerm() external view returns (uint256);
 
-  function getMaturity(uint256 bond) public view returns (uint256);
+  function getMaturity(uint256 bond) external view returns (uint256);
 
-  function getCouponRate() public view returns (uint256);
+  function getCouponRate() external view returns (uint256);
 
-  function getParValue() public view returns (uint256);
+  function getParValue() external view returns (uint256);
 
-  function getCap() public view returns (uint256);
+  function getCap() external view returns (uint256);
 
-  function getBalance(address who) public view returns (uint256);
+  function getBalance(address who) external view returns (uint256);
 
-  function getParDecimals() public view returns (uint256);
+  function getParDecimals() external view returns (uint256);
 
-  function getTokenToRedeem() public view returns (address);
+  function getTokenToRedeem() external view returns (address);
 
-  function getName() public view returns (string);
+  function getName() external view returns (string memory);
 
-  function getTotalDebt() public view returns (uint256);
+  function getTotalDebt() external view returns (uint256);
 
-  function getTotalBonds() public view returns (uint256);
+  function getTotalBonds() external view returns (uint256);
 
-  function getNonce() public view returns (uint256);
+  function getNonce() external view returns (uint256);
 
-  function getCouponThreshold() public view returns (uint256);
+  function getCouponThreshold() external view returns (uint256);
 
 }

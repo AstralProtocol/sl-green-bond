@@ -4,7 +4,7 @@ pragma solidity 0.6.12;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "/interfaces/ISimpleBond.sol";
+import "./interfaces/ISimpleBond.sol";
 
 contract SmartGreenBond is ISimpleBond, Ownable {
 
@@ -24,16 +24,16 @@ contract SmartGreenBond is ISimpleBond, Ownable {
   uint256 nonce = 0;
   uint256 couponThreshold = 0;
 
-  BasicToken token;
+  ERC20 token;
 
   mapping(uint256 => address) bonds;
   mapping(uint256 => uint256) maturities;
   mapping(uint256 => uint256) couponsRedeemed;
   mapping(address => uint256) bondsAmount;
 
-  constructor(string _name, uint256 _par, uint256 _parDecimals, uint256 _coupon,
+  constructor(string memory _name, uint256 _par, uint256 _parDecimals, uint256 _coupon,
               uint256 _term, uint256 _cap, uint256 _timesToRedeem, address _tokenToRedeem,
-              uint256 _loopLimit) {
+              uint256 _loopLimit) public {
 
     require(bytes(_name).length > 0, "Empty name provided");
     require(_coupon > 0, "Coupon rate lower than or equal 0 ");
@@ -56,7 +56,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
       tokenToRedeem = _tokenToRedeem;
 
     else
-      token = BasicToken(_tokenToRedeem);
+      token = ERC20(_tokenToRedeem);
 
    }
 
@@ -65,7 +65,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param _loopLimit The new loop limit
    */
 
-   function changeLoopLimit(uint256 _loopLimit) public onlyOwner {
+   function changeLoopLimit(uint256 _loopLimit) public override onlyOwner {
 
      require(_loopLimit > 0, "Loop limit lower than or equal to 0");
 
@@ -79,14 +79,15 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param _bondsAmount How many bonds to mint
    */
 
-   function mintBond(address buyer, uint256 _bondsAmount) public onlyOwner {
+   function mintBond(address buyer, uint256 _bondsAmount) public override onlyOwner {
 
-     require(buyer != address(0));
-     require(_bondsAmount >= 1);
-     require(_bondsAmount <= loopLimit);
+     require(buyer != address(0), "Buyer can't be address null");
+     require(_bondsAmount > 0, "Amount of bonds to mint must be higher than 0");
+     require(_bondsAmount <= loopLimit, "Amount of bonds to mind must be lower than the loop limit");
 
-     if (cap > 0)
-       require(bondsNumber.add(_bondsAmount) <= cap);
+     if (cap > 0){
+       require(bondsNumber.add(_bondsAmount) <= cap, "Total amount of bonds must be lower or equal to the cap");
+     }
 
      bondsNumber = bondsNumber.add(_bondsAmount);
 
@@ -94,6 +95,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
      for (uint256 i = 0; i < _bondsAmount; i++) {
 
+       // WARNING: we should consider switching 'now' for the 'block.number', this is insecure - João
        maturities[nonce.sub(i)] = now.add(term);
        bonds[nonce.sub(i)] = buyer;
        couponsRedeemed[nonce.sub(i)] = 0;
@@ -114,49 +116,50 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param _bonds An array of bond ids corresponding to the bonds you want to redeem apon
    */
 
-   function redeemCoupons(uint256[] _bonds) public {
+   function redeemCoupons(uint256[] memory _bonds) public override {
 
-     require(_bonds.length > 0);
-     require(_bonds.length <= loopLimit);
-     require(_bonds.length <= getBalance(msg.sender));
+    require(_bonds.length > 0, 'Array of bonds must not be empty');
+    require(_bonds.length <= loopLimit, 'Array of bonds must have a number of bonds lower than the looop limit');
+    require(_bonds.length <= getBalance(msg.sender), 
+    'Array of bonds must have a number of bonds lower than the balance of the bonds of the sender');
 
-     uint256 issueDate = 0;
-     uint256 lastThresholdRedeemed = 0;
-     uint256 toRedeem = 0;
+    uint256 issueDate = 0;
+    uint256 lastThresholdRedeemed = 0;
+    uint256 toRedeem = 0;
 
-     for (uint256 i = 0; i < _bonds.length; i++) {
+    for (uint256 i = 0; i < _bonds.length; i++) {
 
-       if (bonds[_bonds[i]] != msg.sender
-           || couponsRedeemed[_bonds[i]] == timesToRedeem) continue;
+      if (bonds[_bonds[i]] != msg.sender
+          || couponsRedeemed[_bonds[i]] == timesToRedeem) continue;
 
-       issueDate = maturities[_bonds[i]].sub(term);
+      issueDate = maturities[_bonds[i]].sub(term);
 
-       lastThresholdRedeemed = issueDate.add(couponsRedeemed[_bonds[i]].mul(couponThreshold));
+      lastThresholdRedeemed = issueDate.add(couponsRedeemed[_bonds[i]].mul(couponThreshold));
 
-       if (lastThresholdRedeemed.add(couponThreshold) >= maturities[_bonds[i]] ||
-           now < lastThresholdRedeemed.add(couponThreshold)) continue;
+      if (lastThresholdRedeemed.add(couponThreshold) >= maturities[_bonds[i]] ||
+          now < lastThresholdRedeemed.add(couponThreshold)) continue;
 
-       toRedeem = (now.sub(lastThresholdRedeemed)).div(couponThreshold);
+      toRedeem = (now.sub(lastThresholdRedeemed)).div(couponThreshold);
 
-       if (toRedeem == 0) continue;
+      if (toRedeem == 0) continue;
 
-       couponsRedeemed[_bonds[i]] = couponsRedeemed[_bonds[i]].add(toRedeem);
+      couponsRedeemed[_bonds[i]] = couponsRedeemed[_bonds[i]].add(toRedeem);
 
-       getMoney( toRedeem.mul(parValue.mul(couponRate).div( 10 ** (parDecimals.add(2)) ) ), msg.sender );
+      getMoney(toRedeem.mul(parValue.mul(couponRate).div(10 ** (parDecimals.add(2)))), msg.sender);
 
-       if (couponsRedeemed[_bonds[i]] == timesToRedeem) {
+      if (couponsRedeemed[_bonds[i]] == timesToRedeem) {
 
-         bonds[_bonds[i]] = address(0);
-         maturities[_bonds[i]] = 0;
-         bondsAmount[msg.sender]--;
+        bonds[_bonds[i]] = address(0);
+        maturities[_bonds[i]] = 0;
+        bondsAmount[msg.sender]--;
 
-         getMoney(parValue.div( (10 ** parDecimals) ), msg.sender );
+        getMoney(parValue.div((10 ** parDecimals)), msg.sender);
 
-       }
+      }
 
-     }
+    }
 
-     emit RedeemedCoupons(msg.sender, _bonds);
+    emit RedeemedCoupons(msg.sender, _bonds);
 
    }
 
@@ -166,20 +169,20 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param _bonds The ids of the bonds that you want to transfer
    */
 
-   function transfer(address receiver, uint256[] _bonds) public {
+   function transfer(address receiver, uint256[] memory _bonds) public override {
 
-     require(_bonds.length > 0);
-     require(receiver != address(0));
-     require(_bonds.length <= getBalance(msg.sender));
+     require(_bonds.length > 0, 'Array of bonds must not be empty');
+     require(receiver != address(0), "Receiver can't be address null");
+     require(_bonds.length <= getBalance(msg.sender), 
+     'Array of bonds must have a number of bonds lower than the balance of the bonds of the sender');
 
      for (uint256 i = 0; i < _bonds.length; i++) {
 
-       if (bonds[_bonds[i]] != msg.sender
-           || couponsRedeemed[_bonds[i]] == timesToRedeem) continue;
+      if (bonds[_bonds[i]] != msg.sender || couponsRedeemed[_bonds[i]] == timesToRedeem) continue;
 
-       bonds[_bonds[i]] = receiver;
-       bondsAmount[msg.sender] = bondsAmount[msg.sender].sub(1);
-       bondsAmount[receiver] = bondsAmount[receiver].add(1);
+      bonds[_bonds[i]] = receiver;
+      bondsAmount[msg.sender] = bondsAmount[msg.sender].sub(1);
+      bondsAmount[receiver] = bondsAmount[receiver].add(1);
 
      }
 
@@ -191,15 +194,15 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @notice Donate money to this contract
    */
 
-   function donate() public payable {
+   function donate() public payable override {
 
      require(address(token) == address(0));
 
    }
 
-   function() payable { revert(); }
+  receive() external payable { }
+  fallback () external payable {}
 
-   //PRIVATE
 
    /**
    * @notice Transfer coupon money to an address
@@ -207,13 +210,13 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param receiver The address which will receive the money
    */
 
-   function getMoney(uint256 amount, address receiver) private {
+   function getMoney(uint256 amount, address payable receiver) private {
 
      if (address(token) == address(0))
        receiver.transfer(amount);
 
      else
-       token.transfer(msg.sender, amount);
+       ERC20(token).transfer(msg.sender, amount);
 
      totalDebt = totalDebt.sub(amount);
 
@@ -226,7 +229,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param bond The bond id to analyze
    */
 
-   function getLastTimeRedeemed(uint256 bond) public view returns (uint256) {
+   function getLastTimeRedeemed(uint256 bond) public view override returns (uint256) {
 
      uint256 issueDate = maturities[bond].sub(term);
 
@@ -241,7 +244,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param bond The bond id to analyze
    */
 
-   function getBondOwner(uint256 bond) public view returns (address) {
+   function getBondOwner(uint256 bond) public view override returns (address) {
 
      return bonds[bond];
 
@@ -252,7 +255,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param bond The bond id to analyze
    */
 
-   function getRemainingCoupons(uint256 bond) public view returns (int256) {
+   function getRemainingCoupons(uint256 bond) public view override returns (int256) {
 
      address owner = getBondOwner(bond);
 
@@ -269,7 +272,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param bond The bond id to analyze
    */
 
-   function getCouponsRedeemed(uint256 bond) public view returns (uint256) {
+   function getCouponsRedeemed(uint256 bond) public view override returns (uint256) {
 
      return couponsRedeemed[bond];
 
@@ -279,7 +282,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the address of the token that is redeemed for coupons
    */
 
-   function getTokenAddress() public view returns (address) {
+   function getTokenAddress() public view override returns (address) {
 
      return (address(token));
 
@@ -289,7 +292,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get how many times coupons can be redeemed for bonds
    */
 
-   function getTimesToRedeem() public view returns (uint256) {
+   function getTimesToRedeem() public view override returns (uint256) {
 
      return timesToRedeem;
 
@@ -299,7 +302,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get how much time it takes for a bond to mature
    */
 
-   function getTerm() public view returns (uint256) {
+   function getTerm() public view override returns (uint256) {
 
      return term;
 
@@ -310,7 +313,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param bond The bond id to analyze
    */
 
-   function getMaturity(uint256 bond) public view returns (uint256) {
+   function getMaturity(uint256 bond) public view override returns (uint256) {
 
      return maturities[bond];
 
@@ -320,7 +323,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get how much money is redeemed on a coupon
    */
 
-   function getSimpleInterest() public view returns (uint256) {
+   function getSimpleInterest() public view override returns (uint256) {
 
      uint256 rate = getCouponRate();
 
@@ -334,7 +337,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the yield of a bond
    */
 
-   function getCouponRate() public view returns (uint256) {
+   function getCouponRate() public view override returns (uint256) {
 
      return couponRate;
 
@@ -344,7 +347,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the par value for these bonds
    */
 
-   function getParValue() public view returns (uint256) {
+   function getParValue() public view override returns (uint256) {
 
      return parValue;
 
@@ -354,7 +357,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the cap amount for these bonds
    */
 
-   function getCap() public view returns (uint256) {
+   function getCap() public view override returns (uint256) {
 
      return cap;
 
@@ -365,7 +368,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param who The address to analyze
    */
 
-   function getBalance(address who) public view returns (uint256) {
+   function getBalance(address who) public view override returns (uint256) {
 
      return bondsAmount[who];
 
@@ -375,7 +378,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev If the par value is a real number, it might have decimals. Get the amount of decimals the par value has
    */
 
-   function getParDecimals() public view returns (uint256) {
+   function getParDecimals() public view override returns (uint256) {
 
      return parDecimals;
 
@@ -385,7 +388,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the address of the token redeemed for coupons
    */
 
-   function getTokenToRedeem() public view returns (address) {
+   function getTokenToRedeem() public view override returns (address) {
 
      return tokenToRedeem;
 
@@ -395,7 +398,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the name of this smart bond contract
    */
 
-   function getName() public view returns (string) {
+   function getName() public view override returns (string memory) {
 
      return name;
 
@@ -405,7 +408,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the current unpaid debt
    */
 
-   function getTotalDebt() public view returns (uint256) {
+   function getTotalDebt() public view override returns (uint256) {
 
      return totalDebt;
 
@@ -415,7 +418,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the total amount of bonds issued
    */
 
-   function getTotalBonds() public view returns (uint256) {
+   function getTotalBonds() public view override returns (uint256) {
 
      return bondsNumber;
 
@@ -425,7 +428,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the latest nonce
    */
 
-   function getNonce() public view returns (uint256) {
+   function getNonce() public view override returns (uint256) {
 
      return nonce;
 
@@ -435,7 +438,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @dev Get the amount of time that needs to pass between the dates when you can redeem coupons
    */
 
-   function getCouponThreshold() public view returns (uint256) {
+   function getCouponThreshold() public view override returns (uint256) {
 
      return couponThreshold;
 
