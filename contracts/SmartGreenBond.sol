@@ -11,7 +11,6 @@ contract SmartGreenBond is ISimpleBond, Ownable {
   using SafeMath for uint256;
 
   string name;
-  address tokenToRedeem;
   uint256 totalDebt;
   uint256 parDecimals;
   uint256 bondsNumber;
@@ -52,11 +51,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     term = _term;
     couponThreshold = term.div(timesToRedeem);
 
-    if (_tokenToRedeem == address(0))
-      tokenToRedeem = _tokenToRedeem;
-
-    else
+    if (_tokenToRedeem != address(0)){      
       token = ERC20(_tokenToRedeem);
+    }
 
    }
 
@@ -78,7 +75,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @param buyer The buyer of the bonds
    * @param _bondsAmount How many bonds to mint
    */
-
+    // Add payable function ()
    function mintBond(address buyer, uint256 _bondsAmount) public override onlyOwner {
 
      require(buyer != address(0), "Buyer can't be address null");
@@ -93,21 +90,18 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
      nonce = nonce.add(_bondsAmount);
 
-     for (uint256 i = 0; i < _bondsAmount; i++) {
 
-       // WARNING: we should consider switching 'now' for the 'block.number', this is insecure - João
-       maturities[nonce.sub(i)] = now.add(term);
-       bonds[nonce.sub(i)] = buyer;
-       couponsRedeemed[nonce.sub(i)] = 0;
-       bondsAmount[buyer] = bondsAmount[buyer].add(_bondsAmount);
+    // WARNING: we should consider switching 'now' for the 'block.number', this is insecure - João
+    maturities[nonce.sub(i)] = now.add(term);
+    bonds[nonce.sub(i)] = buyer;
+    couponsRedeemed[nonce.sub(i)] = 0;
+    bondsAmount[buyer] = bondsAmount[buyer].add(_bondsAmount);
 
-     }
+    totalDebt = totalDebt.add(parValue.mul(_bondsAmount))
+                .add((parValue.mul(couponRate)
+                .div(100)).mul(timesToRedeem.mul(_bondsAmount)));
 
-     totalDebt = totalDebt.add(parValue.mul(_bondsAmount))
-                 .add((parValue.mul(couponRate)
-                 .div(100)).mul(timesToRedeem.mul(_bondsAmount)));
-
-     emit MintedBond(buyer, _bondsAmount);
+    emit MintedBond(buyer, _bondsAmount);
 
    }
 
@@ -115,7 +109,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    * @notice Redeem coupons on your bonds
    * @param _bonds An array of bond ids corresponding to the bonds you want to redeem apon
    */
-
+  // maybe add onlyOwner and automate off-chain
    function redeemCoupons(uint256[] memory _bonds) public override {
 
     require(_bonds.length > 0, 'Array of bonds must not be empty');
@@ -384,15 +378,6 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
    }
 
-   /**
-   * @dev Get the address of the token redeemed for coupons
-   */
-
-   function getTokenToRedeem() public view override returns (address) {
-
-     return tokenToRedeem;
-
-   }
 
    /**
    * @dev Get the name of this smart bond contract
