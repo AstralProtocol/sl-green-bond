@@ -11,7 +11,7 @@ const TARGET = process.env.npm_lifecycle_event
 
 const PATHS = {
   app: path.join(__dirname, '../src'),
-  build: path.join(__dirname, '../build')
+  build: path.join(__dirname, '../../build')
 }
 
 process.env.BABEL_ENV = TARGET
