@@ -8,6 +8,7 @@ import IconButton           from '@material-ui/core/IconButton'
 import Menu                 from '@material-ui/core/Menu'
 import MenuItem             from '@material-ui/core/MenuItem'
 import AccountCircle        from '@material-ui/icons/AccountCircle'
+import { MetaMaskButton }   from 'rimble-ui'
 import { appConfig }        from 'configs/config-main'
 import { styles }           from './styles.scss'
 
@@ -72,6 +73,9 @@ class Header extends Component {
             <Typography variant="title" color="inherit">
               {appConfig.name}
             </Typography>
+            <MetaMaskButton.Outline size="small" id="metamask-signin">
+              Connect with MetaMask
+            </MetaMaskButton.Outline>
             <div className="dropdown">{menu}</div>
           </Toolbar>
         </AppBar>

@@ -11,6 +11,11 @@
     z-index: 2;
   }
 
+  #metamask-signin {
+    position: absolute;
+    right: 100px;
+  }
+
   @media (min-width: 900px) {
     .dropdown {
       top: 4px;
