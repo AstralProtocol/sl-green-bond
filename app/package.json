@@ -86,7 +86,9 @@
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.3.0",
+    "rimble-ui": "^0.14.0",
     "sha256": "^0.2.0",
+    "styled-components": "^5.1.1",
     "validator": "^10.8.0",
     "web3": "1.0.0-beta.37"
   },

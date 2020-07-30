@@ -92,7 +92,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
 
     // WARNING: we should consider switching 'now' for the 'block.number', this is insecure - João
-    maturities[nonce.sub(i)] = block.timestamp.add(term);
+    maturities[nonce.sub(i)] = now.add(term);
     bonds[nonce.sub(i)] = buyer;
     couponsRedeemed[nonce.sub(i)] = 0;
     bondsAmount[buyer] = bondsAmount[buyer].add(_bondsAmount);
