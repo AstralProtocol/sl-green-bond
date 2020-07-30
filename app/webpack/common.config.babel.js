@@ -40,7 +40,7 @@ const common = {
         exclude: /node_modules/
       },
       {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+        test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.ico$/,
         loader: 'file-loader'
       }
     ]
