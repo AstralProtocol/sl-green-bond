@@ -20,7 +20,7 @@
   "settings" : {
     "import/resolver": {
       "node": {
-        "paths": ["src"]
+        "paths": ["src", "../build"]
       }
     }
   },
@@ -49,6 +49,9 @@
     "react/prefer-stateless-function": "off",
     "react/no-unused-prop-types": [2, {
       "skipShapeProps": true
+    }],
+    "react/prop-types": [2, {
+      "ignore": ["actions", "history"]
     }],
     "import/prefer-default-export": "off",
     "function-paren-newline": "off",

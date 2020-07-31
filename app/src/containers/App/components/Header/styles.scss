@@ -6,20 +6,29 @@
 
   .dropdown {
     position: absolute;
-    top: 2px;
-    right: 10px;
+    top: 4px;
+    right: 5px;
     z-index: 2;
+  }
+
+  #app-name {
+    color: $white;
+    text-decoration: none;
   }
 
   #metamask-signin {
     position: absolute;
-    right: 100px;
+    top: 16px;
+    right: 25px;
   }
 
-  @media (min-width: 900px) {
-    .dropdown {
-      top: 4px;
-      right: 20px;
+  #eth-address {
+    position: absolute;
+    top: 12px;
+    right: 75px;
+    width: 300px;
+    input {
+      height: 40px;
     }
   }
 }
