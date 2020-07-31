@@ -11,7 +11,7 @@ const TARGET = process.env.npm_lifecycle_event
 
 const PATHS = {
   app: path.join(__dirname, '../src'),
-  build: path.join(__dirname, '../build')
+  build: path.join(__dirname, '../../build')
 }
 
 process.env.BABEL_ENV = TARGET
@@ -29,7 +29,10 @@ const common = {
 
   resolve: {
     extensions: ['.jsx', '.js', '.json', '.scss'], /* Enables devs to leave off extension when importing */
-    modules: ['node_modules', PATHS.app, PATHS.build] /* Tell Wepback what directories to search when resolving modules */
+    modules: ['node_modules', PATHS.app, PATHS.build], /* Tell Wepback what directories to search when resolving modules */
+    alias: {
+      contracts: path.join(PATHS.build, '/contracts')
+    }
   },
 
   module: {
@@ -40,7 +43,7 @@ const common = {
         exclude: /node_modules/
       },
       {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+        test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.ico$/,
         loader: 'file-loader'
       }
     ]

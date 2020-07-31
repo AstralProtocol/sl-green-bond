@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interfaces/ISimpleBond.sol";
 
-contract SmartGreenBond is ISimpleBond, Ownable {
+contract SmartGreenBond is Ownable {
 
   using SafeMath for uint256;
 
@@ -29,6 +29,8 @@ contract SmartGreenBond is ISimpleBond, Ownable {
   mapping(uint256 => uint256) maturities;
   mapping(uint256 => uint256) couponsRedeemed;
   mapping(address => uint256) bondsAmount;
+
+  event MintedBond(address buyer, uint256 _bondsAmount);
 
   constructor(string memory _name, uint256 _par, uint256 _parDecimals, uint256 _coupon,
               uint256 _term, uint256 _cap, uint256 _timesToRedeem, address _tokenToRedeem,
@@ -58,25 +60,12 @@ contract SmartGreenBond is ISimpleBond, Ownable {
    }
 
    /**
-   * @notice Change the number of elements you can loop through in this contract
-   * @param _loopLimit The new loop limit
-   */
-
-   function changeLoopLimit(uint256 _loopLimit) public override onlyOwner {
-
-     require(_loopLimit > 0, "Loop limit lower than or equal to 0");
-
-     loopLimit = _loopLimit;
-
-   }
-
-   /**
    * @notice Mint bonds to a new buyer
    * @param buyer The buyer of the bonds
    * @param _bondsAmount How many bonds to mint
    */
     // Add payable function ()
-   function mintBond(address buyer, uint256 _bondsAmount) public override onlyOwner {
+   function mintBond(address buyer, uint256 _bondsAmount) public onlyOwner {
 
      require(buyer != address(0), "Buyer can't be address null");
      require(_bondsAmount > 0, "Amount of bonds to mint must be higher than 0");
@@ -92,9 +81,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
 
     // WARNING: we should consider switching 'now' for the 'block.number', this is insecure - João
-    maturities[nonce.sub(i)] = now.add(term);
-    bonds[nonce.sub(i)] = buyer;
-    couponsRedeemed[nonce.sub(i)] = 0;
+    // maturities[nonce.sub(i)] = now.add(term);
+    // bonds[nonce.sub(i)] = buyer;
+    // couponsRedeemed[nonce.sub(i)] = 0;
     bondsAmount[buyer] = bondsAmount[buyer].add(_bondsAmount);
 
     totalDebt = totalDebt.add(parValue.mul(_bondsAmount))

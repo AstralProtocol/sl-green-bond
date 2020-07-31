@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   Box,
   Form,
@@ -8,14 +9,19 @@ import {
   Flex
 } from 'rimble-ui'
 
-export default function MintBondForm() {
-  const [formValidated, setFormValidated] = useState(false)
+export default function MintBondForm(props) {
+  const [formValidated] = useState(false)
   const [validated, setValidated] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [formInputValue, setFormInputValue] = useState('')
-  const [selectValue, setSelectValue] = useState('')
-  const [checkboxValue, setCheckboxValue] = useState(false)
-  const [radioValue, setRadioValue] = useState('')
+  const [selectValue] = useState('')
+  const [checkboxValue] = useState(false)
+  const [radioValue] = useState('')
+  const { ethAccount } = props
+
+  const validateInput = (e) => {
+    e.target.parentNode.classList.add('was-validated')
+  }
 
   const handleInput = (e) => {
     setInputValue(e.target.value)
@@ -25,25 +31,6 @@ export default function MintBondForm() {
   const handleFormInput = (e) => {
     setFormInputValue(e.target.value)
     validateInput(e)
-  }
-
-  const handleSelect = (e) => {
-    setSelectValue(e.target.value)
-    validateInput(e)
-  }
-
-  const handleCheckbox = (e) => {
-    setCheckboxValue(!checkboxValue)
-    validateInput(e)
-  }
-
-  const handleRadio = (e) => {
-    setRadioValue(e.target.value)
-    validateInput(e)
-  }
-
-  const validateInput = (e) => {
-    e.target.parentNode.classList.add('was-validated')
   }
 
   const validateForm = () => {
@@ -79,7 +66,7 @@ export default function MintBondForm() {
                   type="text"
                   required // set required attribute to use brower's HTML5 input validation
                   onChange={handleInput}
-                  value={inputValue}
+                  value={ethAccount}
                   width={1}
                 />
               </Field>
@@ -106,4 +93,8 @@ export default function MintBondForm() {
       </Box>
     </Box>
   )
+}
+
+MintBondForm.propTypes = {
+  ethAccount: PropTypes.string.isRequired
 }
