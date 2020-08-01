@@ -1,30 +1,29 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as contractActionCreators from 'core/actions/actions-contract'
 import MintBondForm from './components/MintBondForm'
 
 class MintBondsView extends Component {
   render() {
-    const { account } = this.props
+    const { actions } = this.props
+
     return (
       <div className="container">
-        <MintBondForm ethAccount={account.ethAccount} />
+        <MintBondForm
+          contract={actions.contract}
+        />
       </div>
     )
   }
 }
 
-function mapStateToProps(state) {
+function mapDispatchToProps(dispatch) {
   return {
-    account: state.account
+    actions: {
+      contract: bindActionCreators(contractActionCreators, dispatch)
+    }
   }
 }
 
-MintBondsView.propTypes = {
-  account: PropTypes.shape({
-    ethAccount: PropTypes.string
-  }).isRequired
-}
-
-export default connect(mapStateToProps)(MintBondsView)
+export default connect(null, mapDispatchToProps)(MintBondsView)

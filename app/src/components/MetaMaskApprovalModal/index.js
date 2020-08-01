@@ -19,15 +19,14 @@ import ModalCard from '../ModalCard'
 
 class MetaMaskApprovalModal extends React.Component {
   requestMetaMaskApproval = () => {
-    const { actions, history } = this.props
+    const { actions, history, route } = this.props
 
     requestAccountAccess((defaultAccount) => {
       actions.account.setDefaultAccount(defaultAccount)
       actions.contract.setContract(defaultAccount)
-      history.push('/mint')
+      history.push(`/${route}`)
     })
   }
-
 
   renderModalContent = () => {
     return (
@@ -140,8 +139,12 @@ MetaMaskApprovalModal.propTypes = {
   actions: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
   isOpen: PropTypes.bool.isRequired,
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func.isRequired,
+  route: PropTypes.string
+}
+
+MetaMaskApprovalModal.defaultProps = {
+  route: null
 }
 
 export default withRouter(connect(null, mapDispatchToProps)(MetaMaskApprovalModal))
-
