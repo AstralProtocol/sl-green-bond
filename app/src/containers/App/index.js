@@ -15,6 +15,7 @@ import * as providerActionCreators  from 'core/actions/actions-provider'
 import theme from 'configs/theme/config-theme'
 import HomeView from 'containers/HomeView'
 import MintBondsView from 'containers/MintBondsView'
+import PayDebtsView from 'containers/PayDebtsView'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
@@ -38,6 +39,7 @@ class App extends Component {
                 <Switch>
                   <Route path="/home" component={HomeView} />
                   <Route path="/mint" component={MintBondsView} />
+                  <Route path="/pay-debts" component={PayDebtsView} />
                   <Redirect from="/" to="/home" />
                 </Switch>
               </div>
