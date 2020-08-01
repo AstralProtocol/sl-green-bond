@@ -168,6 +168,7 @@ async function initializeDatabaseToJSON(){
     console.log("Successfully converted!")
 
     showResults(dataTable)
+    console.log(dataTable.map(d => d.data.mean))
 }
 
 // This function calculates the Mean of the nox for a single datatable
