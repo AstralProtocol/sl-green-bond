@@ -33,3 +33,6 @@ server.listen(process.env.PORT || 3000, function onListen() {
   console.log(' -> that probably means: http://localhost:%d', address.port)
 })
 /* eslint-disable */
+
+
+// TODO: Call the Data Loader from here on app start
