@@ -53,11 +53,13 @@ interface ISimpleBond {
 
   function getParDecimals() external view returns (uint256);
 
-  function getTokenToRedeem() external view returns (address);
+  // function getTokenToRedeem() external view returns (address);
 
   function getName() external view returns (string memory);
 
   function getTotalDebt() external view returns (uint256);
+
+  function getTotalOwed() external view returns (uint256);
 
   function getTotalBonds() external view returns (uint256);
 
