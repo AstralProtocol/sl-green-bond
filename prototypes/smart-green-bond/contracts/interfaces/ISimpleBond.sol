@@ -59,6 +59,8 @@ interface ISimpleBond {
 
   function getTotalDebt() external view returns (uint256);
 
+  function getTotalOwed() external view returns (uint256);
+
   function getTotalBonds() external view returns (uint256);
 
   function getNonce() external view returns (uint256);

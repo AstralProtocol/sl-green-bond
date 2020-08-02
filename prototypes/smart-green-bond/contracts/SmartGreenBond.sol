@@ -11,6 +11,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
     string name;
     uint256 totalDebt;
+    uint256 totalOwed;
     uint256 parDecimals;
     uint256 bondsNumber;
     uint256 cap;
@@ -408,6 +409,14 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
     function getTotalDebt() public override view returns (uint256) {
         return totalDebt;
+    }
+
+    /**
+     * @dev Get total debt owed by borrower
+     */
+    
+    function getTotalOwed() public override view returns (uint256) {
+        return totalOwed;
     }
 
     /**
