@@ -23,6 +23,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     uint256 nonce = 0;
     uint256 couponThreshold = 0;
     address oracle;
+    uint256 intervalCount = 0;
 
 
     mapping(uint256 => address) bonds;
@@ -30,7 +31,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     mapping(uint256 => uint256) couponsRedeemed;
     mapping(address => uint256) bondsAmount;
 
-    uint256[] sustainabilityMeasurements;
+    uint256[] paymentsHistory;
+
+    event TotalOwedUpdated(totalOwed);
 
     constructor(
         string memory _name,
@@ -221,27 +224,30 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         emit Transferred(msg.sender, receiver, _bonds);
     }
 
+    modifier onlyOracle() {
+        require(msg.sender == oracle, "Only the oracle is authorized to call this function.");
+        _;
+    }
+
     /**
      * @notice Update the total debt the borrower must pay to service the bond each interval
      * @param variablePayment The amount in wei the borrower has to pay. Calculated by the oracle 
      *      from the DEFRA NOx data of London  
      */
 
-    function updateTotalOwed(uint256 variablePayment) public {
-
-        // this function can only be called by the oracle
-        require(address(oracle) == msg.sender, 'Only the oracle can update the variable interest rate!');
-        // Check to make sure that oracle update is due? 
+    function updateTotalOwed(uint256 variablePayment) public onlyOracle {
+        // Check to make sure that oracle update is due?
         // This is a security flaw: it can be called any time past 
-        require(intervalCount.add(1).mul(couponThreshold) < block.number, 'An update to the variable rate is not yet due.')
+        require(intervalCount.add(1).mul(couponThreshold) < block.number, 'An update to the variable rate is not yet due.');
 
-        // other checks on the input value? 
+        // other checks on the input value?
+        // We could have a range of possible values (from 0 to max variable payment) to reduce risks
 
-        // totalOwed = totalOwed + (variablePayment + (totalsBonds * parValue * 0.03))
-        sustainabilityMeasurements.push(variablePayment);
+        totalOwed += variablePayment + (bondsNumber * parValue * 0.03);
+        paymentsHistory.push(variablePayment);
         intervalCount += 1;
 
-        emit TotalOwedUpdated(totalOwed)
+        emit TotalOwedUpdated(totalOwed);
 
     }
 

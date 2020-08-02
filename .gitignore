@@ -1,6 +1,6 @@
 # dependencies
 node_modules
-package-json.lock
+package-lock.json*
 yarn.lock
 
 # testing
@@ -16,6 +16,7 @@ dist
 npm-debug.log
 yarn-error.log
 .truffle-solidity-loader
+.idea/
 
 # Local Netlify folder
 .netlify
