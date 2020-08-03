@@ -33,7 +33,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
     uint256[] paymentsHistory;
 
-    event TotalOwedUpdated(totalOwed);
+    event TotalOwedUpdated(uint256 totalOwed);
 
     constructor(
         string memory _name,
@@ -45,7 +45,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         uint256 _timesToRedeem,
         address _tokenToRedeem,
         uint256 _loopLimit
-    ) public {
+    ) ISimpleBond() public {
         require(bytes(_name).length > 0, "Empty name provided");
         require(_coupon > 0, "Coupon rate lower than or equal 0 ");
         require(_par > 0, "Par lower than or equal 0");
@@ -62,10 +62,6 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         couponRate = _coupon;
         term = _term;
         couponThreshold = term.div(timesToRedeem);
-
-        // if (_tokenToRedeem != address(0)) {
-        //     token = ERC20(_tokenToRedeem);
-        // } // simplify - only in ether this time around
     }
 
     /**
@@ -243,7 +239,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         // other checks on the input value?
         // We could have a range of possible values (from 0 to max variable payment) to reduce risks
 
-        totalOwed += variablePayment + (bondsNumber * parValue * 0.03);
+        totalOwed += variablePayment + (bondsNumber * parValue * (3 / 100));
         paymentsHistory.push(variablePayment);
         intervalCount += 1;
 
@@ -255,9 +251,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
      * @notice Donate money to this contract
      */
 
-    function donate() public override payable {
-        require(address(token) == address(0));
-    }
+//    function donate() public override payable {
+//        require(address(token) == address(0));
+//    }
 
     receive() external payable {}
 
@@ -270,9 +266,11 @@ contract SmartGreenBond is ISimpleBond, Ownable {
      */
 
     function getMoney(uint256 amount, address payable receiver) private {
-        if (address(token) == address(0)) receiver.transfer(amount);
-        else ERC20(token).transfer(msg.sender, amount);
-
+//        if (address(token) == address(0))
+//            receiver.transfer(amount);
+//        else
+//            ERC20(token).transfer(msg.sender, amount);
+        msg.sender.transfer(amount);
         totalDebt = totalDebt.sub(amount); // ?
     }
 
@@ -344,10 +342,10 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     /**
      * @dev Get the address of the token that is redeemed for coupons
      */
-
-    function getTokenAddress() public override view returns (address) {
-        return (address(token));
-    }
+//
+//    function getTokenAddress() public override view returns (address) {
+//        return (address(token));
+//    }
 
     /**
      * @dev Get how many times coupons can be redeemed for bonds
