@@ -20,7 +20,7 @@ interface ISimpleBond {
 
   function transfer(address receiver, uint256[] memory bonds) external;
 
-  function donate() external payable;
+//  function donate() external payable;
 
 
   //GETTERS
@@ -35,7 +35,7 @@ interface ISimpleBond {
 
   function getCouponsRedeemed(uint256 bond) external view returns (uint256);
 
-  function getTokenAddress() external view returns (address);
+//  function getTokenAddress() external view returns (address);
 
   function getTimesToRedeem() external view returns (uint256);
 
@@ -53,11 +53,13 @@ interface ISimpleBond {
 
   function getParDecimals() external view returns (uint256);
 
-  function getTokenToRedeem() external view returns (address);
+  // function getTokenToRedeem() external view returns (address);
 
   function getName() external view returns (string memory);
 
   function getTotalDebt() external view returns (uint256);
+
+  function getTotalOwed() external view returns (uint256);
 
   function getTotalBonds() external view returns (uint256);
 
