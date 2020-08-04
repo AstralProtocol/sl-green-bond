@@ -25,7 +25,6 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     address oracle;
     uint256 intervalCount = 0;
 
-
     mapping(uint256 => address) bonds;
     mapping(uint256 => uint256) maturities;
     mapping(uint256 => uint256) couponsRedeemed;
