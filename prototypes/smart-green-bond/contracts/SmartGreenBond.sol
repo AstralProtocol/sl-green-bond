@@ -43,7 +43,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         uint256 _term,
         uint256 _cap,
         uint256 _timesToRedeem,
-        address _tokenToRedeem,
+        // address _tokenToRedeem,
         uint256 _loopLimit
     ) ISimpleBond() public {
         require(bytes(_name).length > 0, "Empty name provided");
@@ -239,7 +239,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         // other checks on the input value?
         // We could have a range of possible values (from 0 to max variable payment) to reduce risks
 
-        totalOwed += variablePayment + (bondsNumber * parValue * (3 / 100));
+        totalOwed += variablePayment + (bondsNumber * parValue * 3 / 100);
         paymentsHistory.push(variablePayment);
         intervalCount += 1;
 
@@ -270,7 +270,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 //            receiver.transfer(amount);
 //        else
 //            ERC20(token).transfer(msg.sender, amount);
-        msg.sender.transfer(amount);
+        receiver.transfer(amount);
         totalDebt = totalDebt.sub(amount); // ?
     }
 
