@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interfaces/ISimpleBond.sol";
+import "./oracle/Oracle.sol";
 
 contract SmartGreenBond is ISimpleBond, Ownable {
     using SafeMath for uint256;
@@ -234,6 +235,14 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         // Check to make sure that oracle update is due?
         // This is a security flaw: it can be called any time past 
         require(intervalCount.add(1).mul(couponThreshold) < block.number, 'An update to the variable rate is not yet due.');
+
+        
+        // TODO: Call the update____Mean method in the Oracle Contract.
+        // We will probably have to redeploy the contract and edit how to convert the 
+        // returned value and into a type that solidity will recognize.
+        // I also have to route the proper index to the method calls. 
+        // TODO: Figure out how to convert the string of the requested value into uint or floating point.
+
 
         // other checks on the input value?
         // We could have a range of possible values (from 0 to max variable payment) to reduce risks
