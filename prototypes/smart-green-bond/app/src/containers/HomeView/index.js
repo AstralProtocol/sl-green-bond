@@ -28,6 +28,10 @@ class HomeView extends Component {
     return (
       <div className="container">
         <Link to="/mint" onClick={this.displayMetaMaskModal}>Mint Bonds</Link>
+        <br />
+        <br />
+        <Link to="/pay-debts">Pay Debts</Link>
+
         <MetaMaskApprovalModal
           isOpen={openModal}
           closeModal={this.closeMetaMaskModal}

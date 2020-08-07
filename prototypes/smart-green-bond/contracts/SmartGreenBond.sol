@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interfaces/ISimpleBond.sol";
+import "./oracle/Oracle.sol";
 
 contract SmartGreenBond is ISimpleBond, Ownable {
     using SafeMath for uint256;
@@ -23,14 +24,16 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     uint256 nonce = 0;
     uint256 couponThreshold = 0;
     address oracle;
-
+    uint256 intervalCount = 0;
 
     mapping(uint256 => address) bonds;
     mapping(uint256 => uint256) maturities;
     mapping(uint256 => uint256) couponsRedeemed;
     mapping(address => uint256) bondsAmount;
 
-    uint256[] sustainabilityMeasurements;
+    uint256[] paymentsHistory;
+
+    event TotalOwedUpdated(uint256 totalOwed);
 
     constructor(
         string memory _name,
@@ -40,9 +43,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         uint256 _term,
         uint256 _cap,
         uint256 _timesToRedeem,
-        address _tokenToRedeem,
+        // address _tokenToRedeem,
         uint256 _loopLimit
-    ) public {
+    ) ISimpleBond() public {
         require(bytes(_name).length > 0, "Empty name provided");
         require(_coupon > 0, "Coupon rate lower than or equal 0 ");
         require(_par > 0, "Par lower than or equal 0");
@@ -59,10 +62,6 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         couponRate = _coupon;
         term = _term;
         couponThreshold = term.div(timesToRedeem);
-
-        // if (_tokenToRedeem != address(0)) {
-        //     token = ERC20(_tokenToRedeem);
-        // } // simplify - only in ether this time around
     }
 
     /**
@@ -221,27 +220,38 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         emit Transferred(msg.sender, receiver, _bonds);
     }
 
+    modifier onlyOracle() {
+        require(msg.sender == oracle, "Only the oracle is authorized to call this function.");
+        _;
+    }
+
     /**
      * @notice Update the total debt the borrower must pay to service the bond each interval
      * @param variablePayment The amount in wei the borrower has to pay. Calculated by the oracle 
      *      from the DEFRA NOx data of London  
      */
 
-    function updateTotalOwed(uint256 variablePayment) public {
-
-        // this function can only be called by the oracle
-        require(address(oracle) == msg.sender, 'Only the oracle can update the variable interest rate!');
-        // Check to make sure that oracle update is due? 
+    function updateTotalOwed(uint256 variablePayment) public onlyOracle {
+        // Check to make sure that oracle update is due?
         // This is a security flaw: it can be called any time past 
-        require(intervalCount.add(1).mul(couponThreshold) < block.number, 'An update to the variable rate is not yet due.')
+        require(intervalCount.add(1).mul(couponThreshold) < block.number, 'An update to the variable rate is not yet due.');
 
-        // other checks on the input value? 
+        
+        // TODO: Call the update____Mean method in the Oracle Contract.
+        // We will probably have to redeploy the contract and edit how to convert the 
+        // returned value and into a type that solidity will recognize.
+        // I also have to route the proper index to the method calls. 
+        // TODO: Figure out how to convert the string of the requested value into uint or floating point.
 
-        // totalOwed = totalOwed + (variablePayment + (totalsBonds * parValue * 0.03))
-        sustainabilityMeasurements.push(variablePayment);
+
+        // other checks on the input value?
+        // We could have a range of possible values (from 0 to max variable payment) to reduce risks
+
+        totalOwed += variablePayment + (bondsNumber * parValue * 3 / 100);
+        paymentsHistory.push(variablePayment);
         intervalCount += 1;
 
-        emit TotalOwedUpdated(totalOwed)
+        emit TotalOwedUpdated(totalOwed);
 
     }
 
@@ -249,9 +259,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
      * @notice Donate money to this contract
      */
 
-    function donate() public override payable {
-        require(address(token) == address(0));
-    }
+//    function donate() public override payable {
+//        require(address(token) == address(0));
+//    }
 
     receive() external payable {}
 
@@ -264,9 +274,11 @@ contract SmartGreenBond is ISimpleBond, Ownable {
      */
 
     function getMoney(uint256 amount, address payable receiver) private {
-        if (address(token) == address(0)) receiver.transfer(amount);
-        else ERC20(token).transfer(msg.sender, amount);
-
+//        if (address(token) == address(0))
+//            receiver.transfer(amount);
+//        else
+//            ERC20(token).transfer(msg.sender, amount);
+        receiver.transfer(amount);
         totalDebt = totalDebt.sub(amount); // ?
     }
 
@@ -338,10 +350,10 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     /**
      * @dev Get the address of the token that is redeemed for coupons
      */
-
-    function getTokenAddress() public override view returns (address) {
-        return (address(token));
-    }
+//
+//    function getTokenAddress() public override view returns (address) {
+//        return (address(token));
+//    }
 
     /**
      * @dev Get how many times coupons can be redeemed for bonds
