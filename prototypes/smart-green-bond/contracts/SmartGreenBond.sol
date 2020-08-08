@@ -252,6 +252,11 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
     }
 
+    function payTotalDebt() public payable onlyOwner {
+        require(msg.value < totalDebt, "Transaction amount is higher than total owed");
+        totalDebt -= msg.value;
+    }
+
     /**
      * @notice Donate money to this contract
      */
