@@ -44,7 +44,8 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         uint256 _cap,
         uint256 _timesToRedeem,
         // address _tokenToRedeem,
-        uint256 _loopLimit
+        uint256 _loopLimit,
+        address _oracle
     ) ISimpleBond() public {
         require(bytes(_name).length > 0, "Empty name provided");
         require(_coupon > 0, "Coupon rate lower than or equal 0 ");
@@ -62,6 +63,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         couponRate = _coupon;
         term = _term;
         couponThreshold = term.div(timesToRedeem);
+        oracle = _oracle;
     }
 
     /**
