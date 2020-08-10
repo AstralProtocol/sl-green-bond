@@ -6,6 +6,7 @@
   "license": "GPL",
   "description": "A sustainability-linked green bond for Ethereum",
   "scripts": {
+    "start": "node ./backend/server.js",
     "ganache": "ganache-cli -h 0.0.0.0 -p 8545 -d -b 3 -i 333",
     "truffle": "truffle compile --all && truffle migrate --network development --reset",
     "mythx": "truffle run verify",
@@ -15,14 +16,21 @@
   "devDependencies": {
     "@openzeppelin/contracts": "^3.1.0",
     "@truffle/hdwallet-provider": "^1.0.40",
+    "babel-cli": "^6.26.0",
     "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "coveralls": "^3.1.0",
+    "nodemon": "^2.0.4",
     "solidity-coverage": "^0.7.9",
     "truffle": "^5.1.36",
     "truffle-security": "^1.7.3"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
+    "morgan": "^1.10.0",
     "truffle-contract": "^4.0.31"
   }
 }
