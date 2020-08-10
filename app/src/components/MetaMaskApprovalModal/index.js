@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { withRouter } from 'react-router-dom'
 import * as accountActionCreators from 'core/actions/actions-account'
 import * as contractActionCreators from 'core/actions/actions-contract'
+import * as transactionActionCreators from 'core/actions/actions-transaction'
 import {
   Heading,
   Text,
@@ -25,7 +26,7 @@ class MetaMaskApprovalModal extends React.Component {
       actions.account.setDefaultAccount(defaultAccount)
       actions.contract.setContract(defaultAccount)
       history.push(`/${route}`)
-    })
+    }, actions.transaction.setStatus)
   }
 
   renderModalContent = () => {
@@ -130,7 +131,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       account: bindActionCreators(accountActionCreators, dispatch),
-      contract: bindActionCreators(contractActionCreators, dispatch)
+      contract: bindActionCreators(contractActionCreators, dispatch),
+      transaction: bindActionCreators(transactionActionCreators, dispatch)
     }
   }
 }

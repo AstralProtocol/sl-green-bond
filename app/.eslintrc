@@ -59,9 +59,6 @@
     "import/prefer-default-export": "off",
     "function-paren-newline": "off",
     "jsx-a11y/label-has-for": "off",
-    "jsx-a11y/anchor-is-valid": [ "error", {
-      "components": [ "Link" ],
-      "specialLink": [ "to" ]
-    }]
+    "jsx-a11y/anchor-is-valid": "off"
   }
 }
