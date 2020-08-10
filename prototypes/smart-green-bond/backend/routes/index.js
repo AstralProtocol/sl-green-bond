@@ -26,7 +26,7 @@ const getNoxValue = async(req,res,next) => {
         //console.log(response);
         // convert the value
         req.getNoxValue = response.data.mean * 1e18;
-        console.log(req.getNoxValue);
+        console.log("Converted NOxValue: " + req.getNoxValue + " = " + response.data.mean + " * 1e18" );
     } catch (error) {
         console.log(error);
     }
@@ -59,11 +59,11 @@ const fetchNOxAndUpdateContract = async (req, res, next) => {
         console.log(error);
     }
     
-
+    console.log("Contract Metadata: ");
     console.log(contract);
-    console.log(tx);
 
-    console.log(process.env.ORACLE_PRIVATE_KEY);
+    console.log("Transaction Metadata: ")
+    console.log(tx);
 
     let signedTx = web3.eth.accounts.signTransaction(tx, process.env.ORACLE_PRIVATE_KEY);
         
