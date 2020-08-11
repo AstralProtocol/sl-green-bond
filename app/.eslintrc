@@ -17,6 +17,9 @@
   "plugins": [
     "react"
   ],
+  "globals": {
+    "PRODUCTION": false
+  },
   "settings" : {
     "import/resolver": {
       "node": {
