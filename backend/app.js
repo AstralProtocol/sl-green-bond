@@ -13,12 +13,13 @@ async function updateNoxValue(index) {
     }
 }
 
+// have to rewrite this part so that it calls first then starts cron job. 
+//updateNoxValue()
 
-//updateNoxValue();
 
 // This is the Job that will perform the functionality every 5 of minutes
 // Seconds, Minutes, Hours, Days of Month, Months (5th asterisk), Day of Week
-var job = new CronJob('*/5 * * * *', function() {
+var job = new CronJob('*/2 * * * *', function() {
     
     if(count<10){
         updateNoxValue(count);
@@ -28,5 +29,6 @@ var job = new CronJob('*/5 * * * *', function() {
         task.stop();
     }
 });
+
 
 job.start();
