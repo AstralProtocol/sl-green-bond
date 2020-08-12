@@ -19,18 +19,19 @@ export class TransactionChecker {
     })
   }
 
-  watchTransactions() {
+  watchTransactions(txCallback) {
     console.log('Watching all pending transactions...')
     const self = this
 
     this.subscription.on('data', (txHash) => {
       setTimeout(async () => {
         try {
-          const tx = await self.web3.eth.getTransaction(txHash)
+          const tx = await self.web3.eth.getTransactionReceipt(txHash)
           if (tx != null) {
-            console.log(tx.from)
-            if (self.account === tx.to.toLowerCase()) {
-              console.log({ address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestampe: new Date() })
+            if (tx.from.toLowerCase() === self.account) {
+              if (tx.status === true) {
+                if (txCallback) { txCallback(tx.transactionHash, tx.status) }
+              }
             }
           }
         } catch (err) {

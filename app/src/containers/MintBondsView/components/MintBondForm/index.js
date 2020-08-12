@@ -15,7 +15,6 @@ function MintBondForm(props) {
   const [validated, setValidated] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [numOfBondsInputValue, setNumOfBondsInputValue] = useState(10)
-  const { contract } = props
 
   const validateInput = (e) => {
     e.target.parentNode.classList.add('was-validated')
@@ -47,13 +46,13 @@ function MintBondForm(props) {
   })
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    const { onSubmit } = props
     const ethAccount = e.currentTarget[0].value
     const bondsAmount = e.currentTarget[1].value
-    contract.mintBond(ethAccount, bondsAmount, (() => {
-      setInputValue('')
-      setFormValidated(true)
-    }))
+
+    onSubmit(ethAccount, bondsAmount)
+    setFormValidated()
+    e.preventDefault()
   }
 
   return (
@@ -100,9 +99,7 @@ function MintBondForm(props) {
 }
 
 MintBondForm.propTypes = {
-  contract: PropTypes.shape({
-    mintBond: PropTypes.func
-  }).isRequired
+  onSubmit: PropTypes.func.isRequired
 }
 
 export default MintBondForm

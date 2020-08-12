@@ -43,11 +43,12 @@ async function mint(SmartGreenBondContract, buyerAddress, bondsAmount) {
 export function mintBond(buyerAddress, bondsAmount, callback) {
   return async (dispatch, getState) => {
     const { smartGreenBondContract } = getState().contract
-    const transaction = await mint(smartGreenBondContract, buyerAddress, bondsAmount)
+    const transaction = await mint(smartGreenBondContract, buyerAddress, bondsAmount).then(() => {
+      if (callback) { callback() }
+    })
 
     if (transaction) {
       dispatchMintBond(dispatch, transaction)
-      if (callback) { callback() }
     }
   }
 }
@@ -63,7 +64,7 @@ function dispatchTotalDebtOwed(dispatch, totalDebtOwed) {
 
 async function callGetTotalDebtOwed(SmartGreenBondContract) {
   const contract = await SmartGreenBondContract.deployed()
-  const totalDebtOwed = contract.getTotalDebtOwed()
+  const totalDebtOwed = contract.getTotalOwed()
   return totalDebtOwed
 }
 
