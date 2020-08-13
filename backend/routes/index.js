@@ -48,7 +48,7 @@ const fetchNOxAndUpdateContract = async (req, res, next) => {
             // this could be provider.addresses[0] if it exists (ORACLE ADDRESS)
             from: process.env.ORACLE_ADDRESS, 
             // target address, this could be a smart contract address (EXAMPLE CONTRACT ADDRESS)
-            to: process.env.EXAMPLE_ADDRESS, 
+            to: process.env.SMARTGREENBOND_ADDRESS, 
             // optional if you want to specify the gas limit 
             gas: '8000000', 
 
