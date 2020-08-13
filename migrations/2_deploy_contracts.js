@@ -1,4 +1,5 @@
 var SmartGreenBond = artifacts.require("./SmartGreenBond.sol");
+var Oracle = artifacts.require("./oracle/Oracle.sol");
 
 module.exports = async function (deployer) {
   await deployer.deploy(
@@ -13,6 +14,7 @@ module.exports = async function (deployer) {
     "0x0000000000000000000000000000000000000000",
     100
   );
+  deployer.deploy(Oracle);
 
   const smartGreenBondContract = await SmartGreenBond.deployed();
 

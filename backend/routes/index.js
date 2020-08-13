@@ -2,7 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const path = require('path');
 //const smartgreenbondabi = require('../../build/contracts/SmartGreenBond.json');
-const exampleabi = require('./exampleabi.json');
+// const exampleabi = require('./exampleabi.json');
+const smartgreenbondabi = require('../../build/contracts/SmartGreenBond.json');
 const Web3 = require('web3');
 let web3 = new Web3("https://ropsten-rpc.linkpool.io/");
 
@@ -37,7 +38,7 @@ const getNoxValue = async(req,res,next) => {
 const fetchNOxAndUpdateContract = async (req, res, next) => {
 
     try{
-        var contract = new web3.eth.Contract(exampleabi, process.env.EXAMPLE_ADDRESS, {
+        var contract = new web3.eth.Contract(smartgreenbondabi, process.env.SMARTGREENBOND_ADDRESS, {
             from: process.env.ORACLE_ADDRESS, // default from address
             gasPrice: '20000000000', // default gas price in wei, 20 gwei in this case
             gas: '8000000',

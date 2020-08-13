@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interfaces/ISimpleBond.sol";
-import "./oracle/Oracle.sol";
 
 contract SmartGreenBond is ISimpleBond, Ownable {
     using SafeMath for uint256;
@@ -31,7 +30,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     mapping(uint256 => uint256) couponsRedeemed;
     mapping(address => uint256) bondsAmount;
 
-    uint256[] paymentsHistory;
+    uint256[] noxHistory;
 
     event TotalOwedUpdated(uint256 totalOwed);
 
@@ -44,7 +43,8 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         uint256 _cap,
         uint256 _timesToRedeem,
         // address _tokenToRedeem,
-        uint256 _loopLimit
+        uint256 _loopLimit,
+        address _oracle
     ) ISimpleBond() public {
         require(bytes(_name).length > 0, "Empty name provided");
         require(_coupon > 0, "Coupon rate lower than or equal 0 ");
@@ -62,6 +62,7 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         couponRate = _coupon;
         term = _term;
         couponThreshold = term.div(timesToRedeem);
+        oracle = _oracle;
     }
 
     /**
@@ -227,32 +228,31 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
     /**
      * @notice Update the total debt the borrower must pay to service the bond each interval
-     * @param variablePayment The amount in wei the borrower has to pay. Calculated by the oracle 
-     *      from the DEFRA NOx data of London  
+     * @param noxMeasurement The amount in wei the borrower has to pay. Calculated by the oracle
+     *      from the DEFRA NOx data of London
      */
 
-    function updateTotalOwed(uint256 variablePayment) public onlyOracle {
+    function updateTotalOwed(uint256 noxMeasurement) public onlyOracle { // called every 1 year by an off-chain oracle EOA
+        // example noxMeasurement: 44410000000000000000 i.e. 44.41 ether in wei. i.e. 44.41 * 10e18
+
         // Check to make sure that oracle update is due?
-        // This is a security flaw: it can be called any time past 
-        require(intervalCount.add(1).mul(couponThreshold) < block.number, 'An update to the variable rate is not yet due.');
-
-        
-        // TODO: Call the update____Mean method in the Oracle Contract.
-        // We will probably have to redeploy the contract and edit how to convert the 
-        // returned value and into a type that solidity will recognize.
-        // I also have to route the proper index to the method calls. 
-        // TODO: Figure out how to convert the string of the requested value into uint or floating point.
-
-
         // other checks on the input value?
         // We could have a range of possible values (from 0 to max variable payment) to reduce risks
 
-        totalOwed += variablePayment + (bondsNumber * parValue * 3 / 100);
-        paymentsHistory.push(variablePayment);
-        intervalCount += 1;
+        // Add NOx measurement to array so we have a record
+        noxHistory.push(noxMeasurement);
+
+        // Calculate penalty and add to total coupons for that year
+        totalOwed += noxMeasurement.mul(2).add(bondsNumber.mul(parValue).mul(couponRate).div(100));
 
         emit TotalOwedUpdated(totalOwed);
 
+    }
+
+    function payTotalDebt() public payable onlyOwner {
+        require(msg.value < totalDebt, "Transaction amount is higher than total owed");
+        // add requirement that msg.value is == totalDebt
+        totalDebt -= msg.value;
     }
 
     /**
