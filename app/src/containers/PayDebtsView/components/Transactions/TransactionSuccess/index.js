@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as uiActionCreators from 'core/actions/actions-ui'
 import { StandardModal } from 'components/Modals'
-import ethereumGoldCoin from 'assets/images/ethereum-gold-coin.png'
 import {
   Card,
   Box,
@@ -12,7 +11,6 @@ import {
   Text,
   Flex,
   Link,
-  Image,
   Heading,
   Button
 } from 'rimble-ui'
@@ -21,7 +19,7 @@ import { styles } from './styles.scss'
 class TransactionSuccess extends Component {
   close = () => {
     const { actions } = this.props
-    actions.ui.closeModal({ modalKey: 'mint-bonds-transaction-success' })
+    actions.ui.closeModal({ modalKey: 'pay-debt-transaction-success' })
   }
 
   render() {
@@ -30,7 +28,7 @@ class TransactionSuccess extends Component {
     return (
       <div className={styles}>
         <StandardModal
-          modalKey="mint-bonds-transaction-success"
+          modalKey="pay-debt-transaction-success"
           modalState={ui.modalState}
           cssModule={styles}
           onClose={this.close}
@@ -48,7 +46,7 @@ class TransactionSuccess extends Component {
               >
                 <Icon name="CheckCircle" color="success" aria-label="Success" />
                 <Heading textAlign="center" as="h1" fontSize={[2, 3]} px={[3, 0]}>
-                  You&apos;ve successfully minted Green Bonds!
+                  You&apos;ve successfully paid all debts!
                 </Heading>
                 <Link onClick={this.close}>
                   <Icon
@@ -60,15 +58,12 @@ class TransactionSuccess extends Component {
               </Flex>
               <Box p={[3, 4]} pb={2}>
                 <Text textAlign="center" mt={2}>
-                  Green Bonds should now be submitted to the Ethereum addresses you specified.
+                  All debts have been paid to all current bond holders.
                 </Text>
-                <Flex justifyContent="center">
-                  <Image src={ethereumGoldCoin} size="300px" />
-                </Flex>
               </Box>
               <Flex justifyContent="center" flexDirection="column">
                 <Heading textAlign="center" as="h4">
-                  Transactions Id - #324343
+                  Transactions Id - #11242323
                 </Heading>
                 <Link textAlign="center">Show transaction details</Link>
               </Flex>
@@ -83,9 +78,6 @@ class TransactionSuccess extends Component {
                 flexDirection={['column', 'row']}
                 alignItems="center"
               >
-                <Button.Outline mr={[0, 3]} mb={[2, 0]} width={['100%', 'auto']}>
-                  Mint more bonds
-                </Button.Outline>
                 <Button onClick={this.close} width={['100%', 'auto']}>Done</Button>
               </Flex>
             </Card>

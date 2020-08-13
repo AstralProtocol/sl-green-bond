@@ -87,7 +87,6 @@ function dispatchPayTotalDebt(dispatch, transaction) {
   })())
 }
 
-
 export function payTotalDebt() {
   return async (dispatch, getState) => {
     const { smartGreenBondContract, totalDebtOwed } = getState().contract
@@ -95,12 +94,14 @@ export function payTotalDebt() {
     const { web3Provider } = getState().provider
     const contract = await smartGreenBondContract.deployed()
 
-    const transaction = await web3Provider.eth.sendTransaction({
-      from: ethAccount,
-      to: contract.address,
-      value: web3Provider.utils.toWei(totalDebtOwed.toString(), 'ether')
-    })
+    if (totalDebtOwed > 0) {
+      const transaction = await web3Provider.eth.sendTransaction({
+        from: ethAccount,
+        to: contract.address,
+        value: web3Provider.utils.toWei(totalDebtOwed.toString(), 'ether')
+      })
 
-    dispatchPayTotalDebt(dispatch, transaction)
+      dispatchPayTotalDebt(dispatch, transaction)
+    }
   }
 }

@@ -11,7 +11,6 @@ module.exports = async function (deployer) {
     40000,
     10000,
     100,
-    "0x0000000000000000000000000000000000000000",
     100
   );
   deployer.deploy(Oracle);
