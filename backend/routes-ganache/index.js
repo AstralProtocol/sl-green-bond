@@ -3,7 +3,7 @@ const axios = require('axios');
 const path = require('path');
 const smartgreenbond = require('../../build/contracts/SmartGreenBond.json');
 const Web3 = require('web3');
-let web3 = new Web3("https://ropsten-rpc.linkpool.io/");
+let web3 = new Web3("http://127.0.0.1:8545");
 
 const router = express.Router();
 require('dotenv').config();
@@ -36,7 +36,7 @@ const getNoxValue = async(req,res,next) => {
 const fetchNOxAndUpdateContract = async (req, res, next) => {
 
     try{
-        var contract = new web3.eth.Contract(smartgreenbond.abi, process.env.SMARTGREENBOND_ADDRESS_ROPSTEN, {
+        var contract = new web3.eth.Contract(smartgreenbond.abi, process.env.SMARTGREENBOND_ADDRESS, {
             from: process.env.ORACLE_ADDRESS, // default from address
             gasPrice: '20000000000', // default gas price in wei, 20 gwei in this case
             gas: '6721975',
@@ -44,9 +44,9 @@ const fetchNOxAndUpdateContract = async (req, res, next) => {
         // Transaction Object
         var tx = {
             // this could be provider.addresses[0] if it exists (ORACLE ADDRESS)
-            from: process.env.ORACLE_ADDRESS_ROPSTEN, 
+            from: process.env.ORACLE_ADDRESS, 
             // target address, this could be a smart contract address (EXAMPLE CONTRACT ADDRESS)
-            to: process.env.SMARTGREENBOND_ADDRESS_ROPSTEN, 
+            to: process.env.SMARTGREENBOND_ADDRESS, 
             // optional if you want to specify the gas limit 
             gas: '6721975', 
 
@@ -64,7 +64,7 @@ const fetchNOxAndUpdateContract = async (req, res, next) => {
     console.log("Transaction Metadata: ")
     console.log(tx);
 
-    let signedTx = web3.eth.accounts.signTransaction(tx, process.env.ORACLE_PRIVATE_KEY_ROPSTEN);
+    let signedTx = web3.eth.accounts.signTransaction(tx, process.env.ORACLE_PRIVATE_KEY);
         
     signedTx.then((signedTx) => {
         // raw transaction string may be available in .raw or 
