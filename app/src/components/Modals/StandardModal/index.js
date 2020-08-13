@@ -69,7 +69,7 @@ class StandardModal extends Component {
 
 StandardModal.propTypes = {
   actions: PropTypes.shape({
-    ui: PropTypes.func
+    ui: PropTypes.shape({})
   }).isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { withRouter } from 'react-router-dom'
 import * as accountActionCreators from 'core/actions/actions-account'
 import * as contractActionCreators from 'core/actions/actions-contract'
+import * as transactionActionCreators from 'core/actions/actions-transaction'
 import {
   Heading,
   Text,
@@ -19,15 +20,14 @@ import ModalCard from '../ModalCard'
 
 class MetaMaskApprovalModal extends React.Component {
   requestMetaMaskApproval = () => {
-    const { actions, history } = this.props
+    const { actions, history, route } = this.props
 
     requestAccountAccess((defaultAccount) => {
       actions.account.setDefaultAccount(defaultAccount)
       actions.contract.setContract(defaultAccount)
-      history.push('/mint')
-    })
+      history.push(`/${route}`)
+    }, actions.transaction.setStatus)
   }
-
 
   renderModalContent = () => {
     return (
@@ -131,7 +131,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       account: bindActionCreators(accountActionCreators, dispatch),
-      contract: bindActionCreators(contractActionCreators, dispatch)
+      contract: bindActionCreators(contractActionCreators, dispatch),
+      transaction: bindActionCreators(transactionActionCreators, dispatch)
     }
   }
 }
@@ -140,8 +141,12 @@ MetaMaskApprovalModal.propTypes = {
   actions: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
   isOpen: PropTypes.bool.isRequired,
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func.isRequired,
+  route: PropTypes.string
+}
+
+MetaMaskApprovalModal.defaultProps = {
+  route: null
 }
 
 export default withRouter(connect(null, mapDispatchToProps)(MetaMaskApprovalModal))
-
