@@ -21,7 +21,7 @@ import { styles } from './styles.scss'
 class TransactionStarted extends Component {
   close = () => {
     const { actions } = this.props
-    actions.ui.closeModal({ modalKey: 'transaction-started' })
+    actions.ui.closeModal({ modalKey: 'mint-bonds-transaction-started' })
   }
 
   render() {
@@ -30,7 +30,7 @@ class TransactionStarted extends Component {
     return (
       <div className={styles}>
         <StandardModal
-          modalKey="transaction-started"
+          modalKey="mint-bonds-transaction-started"
           modalState={ui.modalState}
           cssModule={styles}
           onClose={this.close}

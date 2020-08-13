@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as uiActionCreators from 'core/actions/actions-ui'
-import MetaMaskIcon from 'assets/images/MetaMaskIcon.svg'
 import { StandardModal } from 'components/Modals'
 import {
   Tooltip,
@@ -13,17 +12,16 @@ import {
   Text,
   Flex,
   Link,
-  Image,
   Heading,
   Button,
   Loader
 } from 'rimble-ui'
 import { styles } from './styles.scss'
 
-class TransactionSummary extends Component {
+class TransactionStarted extends Component {
   close = () => {
     const { actions } = this.props
-    actions.ui.closeModal({ modalKey: 'mint-bonds-transaction-summary' })
+    actions.ui.closeModal({ modalKey: 'pay-debt-transaction-started' })
   }
 
   render() {
@@ -32,7 +30,7 @@ class TransactionSummary extends Component {
     return (
       <div className={styles}>
         <StandardModal
-          modalKey="mint-bonds-transaction-summary"
+          modalKey="pay-debt-transaction-started"
           modalState={ui.modalState}
           cssModule={styles}
           onClose={this.close}
@@ -47,22 +45,22 @@ class TransactionSummary extends Component {
                 p={[3, 4]}
                 pb={3}
               >
-                <Image
-                  src={MetaMaskIcon}
-                  aria-label="MetaMask extension icon"
-                  size="24px"
-                />
+                <Loader aria-label="Processing" size="24px" />
                 <Heading textAlign="center" as="h1" fontSize={[2, 3]} px={[3, 0]}>
-                  Confirm your transaction in MetaMask
+                  Your transaction is being processed...
                 </Heading>
                 <Link onClick={this.close}>
-                  <Icon name="Close" color="moon-gray" aria-label="Close" />
+                  <Icon
+                    name="Close"
+                    color="moon-gray"
+                    aria-label="Close and cancel connection"
+                  />
                 </Link>
               </Flex>
               <Box p={[3, 4]}>
                 <Flex justifyContent="space-between" flexDirection="column">
                   <Text textAlign="center">
-                    Double check the details here – your transaction can&apos;t be refunded.
+                    Your transaction should be successfully completed shortly.
                   </Text>
                   <Flex
                     alignItems="stretch"
@@ -74,41 +72,63 @@ class TransactionSummary extends Component {
                     overflow="hidden"
                     my={[3, 4]}
                   >
-                    <Box bg="primary" px={3} py={2}>
-                      <Text color="white">Smart Green Bonds</Text>
-                    </Box>
+                    <Box bg="success" width={1 / 2} px={3} py={2} />
                     <Flex
+                      bg="primary"
                       p={3}
                       borderBottom="1px solid gray"
                       borderColor="moon-gray"
                       alignItems="center"
+                      justifyContent="space-between"
                       flexDirection={['column', 'row']}
                     >
-                      <Box
-                        position="relative"
-                        height="2em"
-                        width="2em"
-                        mr={[0, 3]}
-                        mb={[3, 0]}
-                      >
-                        <Box position="absolute" top="0" left="0">
-                          <Loader size="2em" />
-                        </Box>
+                      <Box height="2em" width="2em" mr={[0, 3]} mb={3}>
+                        <Flex
+                          bg="near-white"
+                          borderRadius="50%"
+                          height="3em"
+                          width="3em"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Text>50%</Text>
+                        </Flex>
                       </Box>
+
                       <Box>
                         <Text
                           textAlign={['center', 'left']}
-                          fontWeight="600"
-                          fontSize={1}
+                          color="near-white"
+                          ml={[0, 3]}
+                          my={[1, 0]}
+                          fontSize={3}
                           lineHeight="1.25em"
                         >
-                          Waiting for confirmation...
+                          Sending...
                         </Text>
-                        <Link fontWeight={100} lineHeight="1.25em" color="primary">
-                          Don&apos;t see the MetaMask popup?
-                        </Link>
+                      </Box>
+
+                      <Box>
+                        <Flex flexDirection="row" alignItems="center">
+                          <Link
+                            color="near-white"
+                            ml={[0, 3]}
+                            fontSize={1}
+                            lineHeight="1.25em"
+                            href="https://etherscan.io"
+                          >
+                            Details
+                            <Icon
+                              ml={1}
+                              color="near-white"
+                              name="Launch"
+                              size="14px"
+                            />
+                          </Link>
+                        </Flex>
                       </Box>
                     </Flex>
+
                     <Flex
                       justifyContent="space-between"
                       bg="light-gray"
@@ -151,6 +171,7 @@ class TransactionSummary extends Component {
                         </Tooltip>
                       </Link>
                     </Flex>
+
                     <Flex
                       justifyContent="space-between"
                       bg="near-white"
@@ -166,10 +187,10 @@ class TransactionSummary extends Component {
                         color="near-black"
                         fontWeight="bold"
                       >
-                        Price
+                        Debt Owed
                       </Text>
                       <Flex
-                        alignItems={['center', 'flex-end']}
+                        alignItems={['baseline', 'flex-end']}
                         flexDirection={['row', 'column']}
                       >
                         <Text
@@ -185,6 +206,7 @@ class TransactionSummary extends Component {
                         </Text>
                       </Flex>
                     </Flex>
+
                     <Flex
                       justifyContent="space-between"
                       bg="light-gray"
@@ -214,10 +236,10 @@ class TransactionSummary extends Component {
                             color="primary"
                           />
                         </Tooltip>
-
                       </Flex>
+
                       <Flex
-                        alignItems={['center', 'flex-end']}
+                        alignItems={['baseline', 'flex-end']}
                         flexDirection={['row', 'column']}
                       >
                         <Text
@@ -233,6 +255,7 @@ class TransactionSummary extends Component {
                         </Text>
                       </Flex>
                     </Flex>
+
                     <Flex
                       justifyContent="space-between"
                       bg="near-white"
@@ -243,10 +266,10 @@ class TransactionSummary extends Component {
                       <Text color="near-black" fontWeight="bold">
                         Estimated time
                       </Text>
-                      <Text color="mid-gray">Less than 2 minutes</Text>
+                      <Text color="mid-gray">Less than 2 minutes remaining</Text>
                     </Flex>
                   </Flex>
-                  <Button.Outline onClick={this.close}>Cancel purchase</Button.Outline>
+                  <Button.Outline onClick={this.close}>Close</Button.Outline>
                 </Flex>
               </Box>
             </Card>
@@ -257,7 +280,7 @@ class TransactionSummary extends Component {
   }
 }
 
-TransactionSummary.propTypes = {
+TransactionStarted.propTypes = {
   actions: PropTypes.shape({}).isRequired,
   ui: PropTypes.shape({
     modalState: PropTypes.shape({})
@@ -278,4 +301,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionSummary)
+export default connect(mapStateToProps, mapDispatchToProps)(TransactionStarted)

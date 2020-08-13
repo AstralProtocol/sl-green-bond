@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interfaces/ISimpleBond.sol";
-import "./oracle/Oracle.sol";
+// import "./oracle/Oracle.sol";
 
 contract SmartGreenBond is ISimpleBond, Ownable {
     using SafeMath for uint256;
@@ -263,6 +263,9 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 //        require(address(token) == address(0));
 //    }
 
+    /**
+     * @dev Receives money sent to this contract.  
+     */
     receive() external payable {}
 
     fallback() external payable {}
@@ -480,4 +483,5 @@ contract SmartGreenBond is ISimpleBond, Ownable {
     function getCouponThreshold() public override view returns (uint256) {
         return couponThreshold;
     }
+
 }

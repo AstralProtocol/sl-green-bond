@@ -23,7 +23,7 @@ import { styles } from './styles.scss'
 class TransactionSummary extends Component {
   close = () => {
     const { actions } = this.props
-    actions.ui.closeModal({ modalKey: 'mint-bonds-transaction-summary' })
+    actions.ui.closeModal({ modalKey: 'pay-debt-transaction-summary' })
   }
 
   render() {
@@ -32,7 +32,7 @@ class TransactionSummary extends Component {
     return (
       <div className={styles}>
         <StandardModal
-          modalKey="mint-bonds-transaction-summary"
+          modalKey="pay-debt-transaction-summary"
           modalState={ui.modalState}
           cssModule={styles}
           onClose={this.close}
@@ -75,7 +75,7 @@ class TransactionSummary extends Component {
                     my={[3, 4]}
                   >
                     <Box bg="primary" px={3} py={2}>
-                      <Text color="white">Smart Green Bonds</Text>
+                      <Text color="white">Pay Outstanding Debts</Text>
                     </Box>
                     <Flex
                       p={3}
@@ -166,7 +166,7 @@ class TransactionSummary extends Component {
                         color="near-black"
                         fontWeight="bold"
                       >
-                        Price
+                        Debt Owed
                       </Text>
                       <Flex
                         alignItems={['center', 'flex-end']}
@@ -178,10 +178,10 @@ class TransactionSummary extends Component {
                           fontWeight="bold"
                           lineHeight="1em"
                         >
-                          5.4 ETH
+                          12 ETH
                         </Text>
                         <Text color="mid-gray" fontSize={1}>
-                          $1450 USD
+                          $4,699 USD
                         </Text>
                       </Flex>
                     </Flex>

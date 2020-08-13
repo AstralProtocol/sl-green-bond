@@ -19,21 +19,21 @@ class MintBondsView extends Component {
   onSubmit = async (ethAccount, bondsAmount) => {
     const { actions } = this.props
 
-    actions.ui.openModal({ modalKey: 'transaction-summary' })
+    actions.ui.openModal({ modalKey: 'mint-bonds-transaction-summary' })
     await actions.contract.mintBond(ethAccount, bondsAmount)
     this.onConfirm()
   }
 
   onConfirm = () => {
     const { actions } = this.props
-    actions.ui.closeModal({ modalKey: 'transaction-summary' })
-    actions.ui.openModal({ modalKey: 'transaction-started' })
+    actions.ui.closeModal({ modalKey: 'mint-bonds-transaction-summary' })
+    actions.ui.openModal({ modalKey: 'mint-bonds-transaction-started' })
   }
 
   onSuccess = () => {
     const { actions } = this.props
-    actions.ui.closeModal({ modalKey: 'transaction-started' })
-    actions.ui.openModal({ modalKey: 'transaction-success' })
+    actions.ui.closeModal({ modalKey: 'mint-bonds-transaction-started' })
+    actions.ui.openModal({ modalKey: 'mint-bonds-transaction-success' })
   }
 
   render() {
