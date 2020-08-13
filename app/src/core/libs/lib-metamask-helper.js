@@ -1,7 +1,7 @@
 import { TransactionChecker } from 'core/libs/lib-transaction-checker'
 import { appConfig } from 'configs/config-main'
 
-export function requestAccountAccess(callback) {
+export function requestAccountAccess(callback, txCallback) {
   const { ethereum } = window
 
   ethereum.enable().then((account) => {
@@ -9,8 +9,10 @@ export function requestAccountAccess(callback) {
     const ethereumAccount = account[0]
     const txChecker = new TransactionChecker(INFURA_PROJECT_ID, ethereumAccount)
 
-    txChecker.subscribe('pendingTransactions')
-    txChecker.watchTransactions()
+    if (txCallback) {
+      txChecker.subscribe('pendingTransactions')
+      txChecker.watchTransactions(txCallback)
+    }
 
     callback(ethereumAccount)
   })

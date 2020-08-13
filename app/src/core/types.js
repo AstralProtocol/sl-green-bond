@@ -12,5 +12,6 @@ export default keyMirror({
   SET_ACCOUNT: null,
   SET_CONTRACT: null,
   SET_PROVIDER: null,
+  SET_TX_STATUS: null,
   TOTAL_DEBT_OWED: null
 })
