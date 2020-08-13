@@ -19,7 +19,7 @@ async function updateNoxValue(index) {
 
 // This is the Job that will perform the functionality every 5 of minutes
 // Seconds, Minutes, Hours, Days of Month, Months (5th asterisk), Day of Week
-var job = new CronJob('*/2 * * * *', function() {
+var job = new CronJob('* * * * *', function() {
     
     if(count<10){
         updateNoxValue(count);

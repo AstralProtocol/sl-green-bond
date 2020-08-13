@@ -34,6 +34,17 @@ contract SmartGreenBond is ISimpleBond, Ownable {
 
     event TotalOwedUpdated(uint256 totalOwed);
 
+    /**
+    * @notice Constructor - address _tokenToRedeem add this in the future if we want settlements in ERC20,
+    * @param _par The new loop limi
+    * @param _parDecimals The new loop limi
+    * @param _coupon The new loop limi
+    * @param _term The new loop limi
+    * @param _cap The new loop limi
+    * @param _timesToRedeem The new loop limi
+    * @param _loopLimit The new loop limi´
+    * @param _oracle The new loop limi
+     */
     constructor(
         string memory _name,
         uint256 _par,
@@ -42,7 +53,6 @@ contract SmartGreenBond is ISimpleBond, Ownable {
         uint256 _term,
         uint256 _cap,
         uint256 _timesToRedeem,
-        // address _tokenToRedeem,
         uint256 _loopLimit,
         address _oracle
     ) ISimpleBond() public {
