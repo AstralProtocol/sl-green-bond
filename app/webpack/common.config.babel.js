@@ -27,6 +27,10 @@ const common = {
     filename: 'bundle.js'
   },
 
+  node: {
+    fs: 'empty'
+  },
+
   resolve: {
     extensions: ['.jsx', '.js', '.json', '.scss'], /* Enables devs to leave off extension when importing */
     modules: ['node_modules', PATHS.app, PATHS.build], /* Tell Wepback what directories to search when resolving modules */

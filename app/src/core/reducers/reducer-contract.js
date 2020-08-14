@@ -2,7 +2,7 @@ import constants from 'core/types'
 
 const initialState = {
   smartGreenBondContract: null,
-  totalDebtOwed: null,
+  totalDebtOwed: 0,
   transaction: null
 }
 
