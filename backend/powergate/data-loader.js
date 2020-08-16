@@ -12,7 +12,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2003.csv",
+            path: "./csv-nox/london-mapnox2003.csv",
             json: "",    
         },
     },
@@ -23,7 +23,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2004.csv",
+            path: "./csv-nox/london-mapnox2004.csv",
             json: "",    
         },
     },
@@ -34,7 +34,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2005.csv",
+            path: "./csv-nox/london-mapnox2005.csv",
             json: "",     
         },
     },
@@ -45,7 +45,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2006.csv",
+            path: "./csv-nox/london-mapnox2006.csv",
             json: "",    
         },
     },
@@ -56,7 +56,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2007.csv",
+            path: "./csv-nox/london-mapnox2007.csv",
             json: "",  
         },
     },
@@ -67,7 +67,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2008.csv",
+            path: "./csv-nox/london-mapnox2008.csv",
             json: "", 
         },
     },
@@ -78,7 +78,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2009.csv",
+            path: "./csv-nox/london-mapnox2009.csv",
             json: "", 
         },
     },
@@ -89,7 +89,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2010.csv",
+            path: "./csv-nox/london-mapnox2010.csv",
             json: "", 
         },
     },
@@ -100,7 +100,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2011.csv",
+            path: "./csv-nox/london-mapnox2011.csv",
             json: "", 
         },
     },
@@ -111,7 +111,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2012.csv",
+            path: "./csv-nox/london-mapnox2012.csv",
             json: "",   
         },
     },
@@ -122,7 +122,7 @@ var dataTable = [
             mean: 0,
         },
         file: {
-            path: "../data/data-defra/london/csv/london-mapnox2013.csv",
+            path: "./csv-nox/london-mapnox2013.csv",
             json: "", 
         },
     }

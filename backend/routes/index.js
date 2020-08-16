@@ -18,7 +18,7 @@ require('dotenv').config();
 // TODO: find the contract address and deployer address
 // 0xE254A460D561fE53843F20760722772B7512fc15 is dummy contract used to test
 
-
+// Replace the middleware with another function that will retrieve the data from the 
 const getNoxValue = async(req,res,next) => {
     try {
         const response = await axios.get(`https://calm-caverns-22873.herokuapp.com/data/${req.params.id}`);
