@@ -18,6 +18,7 @@ Instalation:
 More in depth in https://docs.textile.io/powergate/localnet/
 `git clone git@github.com:textileio/powergate.git`
 `cd powergate/docker`
+`BIGSECTORS=true make localnet`
 When complete, you will have a fully functional Powergate (powd), a Lotus localnet, and an IPFS node wired correctly together to start using.
 To install the CLI
 - `make build-pow`
