@@ -10,6 +10,19 @@ How to deploy locally to ganache (be sure to have ganache-cli installed globally
 4. Run `yarn start-cron` in an extra 3rd terminal to start the cron job
 5. Run `cd app && yarn start` in a 4th end to start the front end. It will be available on localhost:4000
 
+### Starting powergate
+Prerequisites:
+- Docker Desktop and Docker Compose
+- Golang
+Instalation:
+More in depth in https://docs.textile.io/powergate/localnet/
+`git clone git@github.com:textileio/powergate.git`
+`cd powergate/docker`
+When complete, you will have a fully functional Powergate (powd), a Lotus localnet, and an IPFS node wired correctly together to start using.
+To install the CLI
+- `make build-pow`
+- Check the instalation with `pow --help`
+
 ### Description
 
 We are designing a sustainability-linked bond in Solidity, to enable the issuance and repayment of a corporate or government bond on Ethereum. Blockchain bonds hold promise to offer significant savings in the cost of issuance and administration. Our aim is to link the bond structure to sustainability metrics submitted by an off-chain oracle, which is analyzing measurements of ecological health.

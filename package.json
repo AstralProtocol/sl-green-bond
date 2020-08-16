@@ -28,6 +28,7 @@
     "truffle-security": "^1.7.3"
   },
   "dependencies": {
+    "@textile/powergate-client": "^1.0.0",
     "axios": "^0.19.2",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
