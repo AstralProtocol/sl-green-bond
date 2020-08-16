@@ -7,6 +7,7 @@
   "description": "A sustainability-linked green bond for Ethereum",
   "scripts": {
     "start-server": "node ./backend/server.js",
+    "start-server-ganache": "node ./backend/server-ganache.js",
     "start-cron": "node ./backend/cron.js",
     "ganache": "ganache-cli -h 0.0.0.0 -p 8545 -d -b 3 -i 333",
     "truffle": "truffle compile --all && truffle migrate --network development --reset",
