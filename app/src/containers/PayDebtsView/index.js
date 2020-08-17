@@ -18,20 +18,23 @@ import { styles } from './styles.scss'
 class PayDebtsView extends Component {
   constructor(props) {
     super(props)
-
     this.state = { timer: '' }
   }
   componentDidMount() {
-    const { actions } = this.props
-    actions.contract.getTotalDebtOwed()
     setTimeout(() => {
       this.setState({ timer: 'expired' })
     }, 2000)
   }
 
   componentDidUpdate(prevProps) {
+    const { actions } = this.props
+    if (prevProps.contract.smartGreenBondContract !== this.props.contract.smartGreenBondContract) {
+      actions.contract.getTotalDebtOwed()
+    }
     if (prevProps.transaction.txHash !== this.props.transaction.txHash) {
-      this.onSuccess()
+      if (this.props.transaction.txHash === this.props.contract.transaction.transactionHash) {
+        this.onSuccess()
+      }
     }
   }
 
@@ -48,25 +51,40 @@ class PayDebtsView extends Component {
   }
 
   payTotalDebt = async () => {
-    const { actions } = this.props
-    actions.ui.openModal({ modalKey: 'pay-debt-transaction-summary' })
-    await actions.contract.payTotalDebt()
-    this.onConfirm()
+    const { actions, contract } = this.props
+    const { totalDebtOwed } = contract
+
+    if (totalDebtOwed > 0) {
+      actions.ui.openModal({ modalKey: 'pay-debt-transaction-summary' })
+      await actions.contract.payTotalDebt()
+      this.onConfirm()
+    }
   }
 
   displayTotalDebtOwed = () => {
     const { contract } = this.props
     const { timer } = this.state
 
-    if (contract.totalDebtOwed !== null && (timer === 'expired')) {
-      return (
-        <div>
-          <span>Total Debt Owed: <strong>{contract.totalDebtOwed} ETH</strong></span>
-          <Box id="pay-debt-btn" px={3}>
-            <Button onClick={this.payTotalDebt}>Pay Total Debt Now</Button>
-          </Box>
-        </div>
-      )
+    if (timer === 'expired') {
+      if (contract.totalDebtOwed > 0) {
+        return (
+          <div>
+            <span>Total Debt Owed: <strong>{contract.totalDebtOwed} ETH</strong></span>
+            <Box id="pay-debt-btn" px={3}>
+              <Button onClick={this.payTotalDebt}>Pay Total Debt Now</Button>
+            </Box>
+          </div>
+        )
+      } else if (contract.totalDebtOwed === 0) {
+        return (
+          <div>
+            <span>Total Debt Owed: <strong>{contract.totalDebtOwed} ETH</strong></span>
+            <Box id="pay-debt-btn" px={3}>
+              <Button disabled onClick={this.payTotalDebt}>Pay Total Debt Now</Button>
+            </Box>
+          </div>
+        )
+      }
     }
 
     return (
@@ -117,7 +135,11 @@ function mapDispatchToProps(dispatch) {
 PayDebtsView.propTypes = {
   contract: PropTypes.shape({
     totalDebtOwed: PropTypes.number,
-    getTotalDebtOwed: PropTypes.func
+    getTotalDebtOwed: PropTypes.func,
+    smartGreenBondContract: PropTypes.shape({}),
+    transaction: PropTypes.shape({
+      transactionHash: PropTypes.string.isRequired
+    })
   }).isRequired,
   transaction: PropTypes.shape({
     txHash: PropTypes.string
