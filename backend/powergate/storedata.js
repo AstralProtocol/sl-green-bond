@@ -3,15 +3,19 @@ const fs = require("fs");
 const { create } = require("domain");
 const host = "http://localhost:6002"; // Powergate Instance PORT
 const pow = power.createPow({ host });
-    
 
 console.log(pow);
 
 async function bindAuthToken() {
-    const { token } = await pow.ffs.create(); // save this token for later use!\
-    console.log(token);
-    // sets the authToken to the powergate instance
-    pow.setToken(token)
+    try{
+        const { token } = await pow.ffs.create(); // save this token for later use!\
+        console.log(token);
+        // sets the authToken to the powergate instance
+        pow.setToken(token);
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 
@@ -19,24 +23,13 @@ async function bindAuthToken() {
 // sets the authToken to the instance
 //pow.setToken(authToken)
 
-// Generate and the Set the Auth Token 
-async function generateAndSetAuthToken() {
-    try{
-        const { token } = await pow.ffs.create(); // save this token for later use!
-        console.log(token);
-    }
-    catch(error){
-        console.log(error);
-    }
-}
-
 // get general info about your ffs instance
-async function loader(){
+async function loadTheDataToFFSMacroFunction(){
     var num = ["03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"];
     // Test File path 
     for (var i = 0; i < num.length; i++){
         const filePathBase = "./csv-nox/london-mapnox20" + num[i] + ".csv";
-        await loadTheDataToFFSMacroFunction(filePathBase);
+        await loadTheDataToFFS(filePathBase);
         await getInfoOnFFS();
         console.log(filePathBase);
     }
@@ -53,20 +46,13 @@ async function getInfoOnFFS(){
     catch(error){
         console.log(error);
     } 
-    
 }
 
-async function loadTheDataToFFSMacroFunction(filePath){
+async function loadTheDataToFFS(filePath){
 
     try{
         // get wallet addresses associated with your FFS instance
         const { addrsList } = await pow.ffs.addrs()
-
-        // create a new address associated with your ffs instance
-        //const { addr } = await pow.ffs.newAddr("minerAddress")
-            
-        // get general info about your ffs instance
-        //const { info } = await pow.ffs.info()
         
         // 3) Get use the file path to import the file and cache
         const buffer = fs.readFileSync(filePath);
@@ -77,24 +63,7 @@ async function loadTheDataToFFSMacroFunction(filePath){
         // 4) store the Data in the FFS instance. We need to save the auth toke nto retrieve it again
         const { jobId } = await pow.ffs.pushStorageConfig(cid);
         
-        console.log(jobId);
-        const job = jobId;
-        
-        // 5) watch the Job status
-        /*
-        const jobsCancel = pow.ffs.watchJobs((job) => {
-            if (job.status === JobStatus.JOB_STATUS_CANCELED) {
-            console.log("job canceled")
-            } else if (job.status === JobStatus.JOB_STATUS_FAILED) {
-            console.log("job failed")
-            } else if (job.status === JobStatus.JOB_STATUS_SUCCESS) {
-            console.log("job success!")
-            }
-        }, jobId)
-
-        console.log(jobsCancel);*/
-        // 6) Send the Fil to the miner
-        //await pow.ffs.sendFil(addrsList[0].addr, addr, amountOfFil);
+        console.log("The Job ID: " + jobId);
     }
     catch(error){
         console.log(error);
@@ -104,8 +73,21 @@ async function loadTheDataToFFSMacroFunction(filePath){
 
 
 // Runs the script 
-bindAuthToken();
-loader();
+async function startScript(){
+    try{
+        await bindAuthToken();
+        await loadTheDataToFFSMacroFunction();
+    }catch(error){
+        console.log(error);
+    }    
+}
+
+// The start script:
+startScript();
+//console.log("The Auth Token for this instance is " + tokenForThisInstance);
+console.log("Save the token to retrieve these files later and re-access this instance of Powergate");
+
+
 
 
 
