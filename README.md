@@ -1,24 +1,34 @@
 # Smart Green Bond
 
-### How to start
+### How to start with Powergate
 
 How to deploy locally to ganache (be sure to have ganache-cli installed globally)
 
 1. Run `yarn ganache` in one terminal
 2. Run `yarn truffle` in another terminal to deploy the contracts
-3. Run `yarn start-server` as soon as the contracts finish deploying in the last terminal
+3. Run `yarn load-powergate-data` as soon as the contracts finish deploying in the last terminal
 4. Run `yarn start-cron` in an extra 3rd terminal to start the cron job
 5. Run `cd app && yarn start` in a 4th end to start the front end. It will be available on localhost:4000
 
 ### Starting powergate
+
 Prerequisites:
 - Docker Desktop and Docker Compose
 - Golang
+
 Instalation:
+
 More in depth in https://docs.textile.io/powergate/localnet/
-`git clone git@github.com:textileio/powergate.git`
-`cd powergate/docker`
-`BIGSECTORS=true make localnet`
+- `git clone git@github.com:textileio/powergate.git`
+- `cd powergate/docker`
+- `BIGSECTORS=true make localnet`
+If there are errors at this point, such as "powd/main.go:66 starting server: connecting to lotus node: resolving dns: lookup lotus on 127.0.0.11:53: no such host
+localnet_powergate_1 exited with code 1" OR SIGINT errors, you should try to build the lotus image by yourself
+- `git clone https://github.com/textileio/lotus-devnet.git`
+- `git checkout ntwk-calibration-x.x.x` (substitute x x x for the latest release branch)
+- `docker build -t my-local-devnet .`
+- `In the Powergate repo, replace in docker/docker-compose-localdevnet.yaml, the textile/local-devnet:.. for my-local-devnet.`
+
 When complete, you will have a fully functional Powergate (powd), a Lotus localnet, and an IPFS node wired correctly together to start using.
 To install the CLI
 - `make build-pow`
