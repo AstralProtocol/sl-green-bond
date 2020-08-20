@@ -3,6 +3,8 @@ const fs = require("fs");
 const { create } = require("domain");
 const host = "http://localhost:6002"; // Powergate Instance PORT
 const pow = power.createPow({ host });
+const path = require('path');
+
 
 console.log(pow);
 
@@ -18,19 +20,20 @@ async function bindAuthToken() {
     }
 }
 
-
-//const authToken = '3a5b27c3-9c9d-4d6c-9f82-9c612803ad92';
-// sets the authToken to the instance
-//pow.setToken(authToken)
-
-// get general info about your ffs instance
+// load the data to FFS
 async function loadTheDataToFFSMacroFunction(){
-    var num = ["03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"];
-    // Test File path 
+    var num = ["/london-mapnox2003.csv", "/london-mapnox2004.csv", "/london-mapnox2005.csv", 
+    "/london-mapnox006.csv", "/london-mapnox2007.csv", "/london-mapnox2008.csv", "/london-mapnox2009.csv", 
+    "/london-mapnox2010.csv", "/london-mapnox2011.csv", "/london-mapnox2012.csv", "/london-mapnox2013.csv"];
+ 
     for (var i = 0; i < num.length; i++){
-        const filePathBase = "./csv-nox/london-mapnox20" + num[i] + ".csv";
-        await loadTheDataToFFS(filePathBase);
-        await getInfoOnFFS();
+        const filePathBase = path.join(__dirname, "csv-nox", num[i]);
+        try {
+            await loadTheDataToFFS(filePathBase);
+            await getInfoOnFFS();
+        }catch(error){
+            console.log(error)
+        }
         console.log(filePathBase);
     }
 }
