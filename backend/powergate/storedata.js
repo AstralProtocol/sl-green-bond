@@ -71,7 +71,6 @@ async function loadTheDataToFFS(filePath){
     
 }
 
-
 // Runs the script 
 async function startScript(){
     try{

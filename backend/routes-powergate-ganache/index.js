@@ -111,8 +111,6 @@ async function calculateAverage(size, jsonObject, noxyear){
 
         annual_sum = Decimal.add(annual_sum, nox_Value)
     }
-    console.log(annual_sum)
-    console.log("Finished sum")
 
     // find annual mean for all of london
     annual_mean = Decimal.div(annual_sum, true_size)
@@ -126,7 +124,7 @@ async function calculateAverage(size, jsonObject, noxyear){
  * */
 const getDataFromFFS = async(req, res, next) => {
 
-    const authToken = '14cf3d7d-1e4b-4109-9ce5-a5f63a00dfb1';
+    const authToken = 'f6485ac0-c5ca-4f10-9e70-ed568c5ed7e6';
     // sets the authToken to the instance
     pow.setToken(authToken);
 
@@ -137,6 +135,11 @@ const getDataFromFFS = async(req, res, next) => {
         const logsCancel = pow.ffs.watchLogs((cid) => {
             console.log(`received event for cid ${logEvent.cid}`)
         }, cid)
+
+
+        const { info } = await pow.ffs.info();
+        console.log("Powergate Instance");
+        console.log(info);
 
         var bytes = await pow.ffs.get(cid);
         console.log(bytes);
@@ -164,7 +167,7 @@ const getDataFromFFS = async(req, res, next) => {
         console.log(error);
     }
 
-    console.log("Converted NOxValue: " + req.getNoxValue + " = " + req.getNoxMean + " * 1e18" );
+    console.log("Converted NOx Value: " + req.getNoxValue + " = " + req.getNoxMean + " * 1e18" );
 
     next();
 }
@@ -191,17 +194,13 @@ const fetchNOxAndUpdateContract = async (req, res, next) => {
             // this encodes the ABI of the method and the arguements
             data: await contract.methods.updateTotalOwed(`${req.getNoxValue}`).encodeABI()
         };
+
+        console.log("Transaction Metadata: ")
+        console.log(tx);
+
     }catch(error){
         console.log(error);
     }
-
-
-    const { info } = await pow.ffs.info();
-    console.log("Powergate Instance");
-    console.log(info);
-    
-    console.log("Transaction Metadata: ")
-    console.log(tx);
 
     let signedTx = web3.eth.accounts.signTransaction(tx, process.env.ORACLE_PRIVATE_KEY);
         
