@@ -1,5 +1,6 @@
 import constants        from 'core/types'
-import TruffleContract  from 'truffle-contract'
+import TruffleContract  from '@truffle/contract'
+import { appConfig }    from 'configs/config-main'
 import SmartGreenBond   from 'contracts/SmartGreenBond.json'
 
 function dispatchSetContract(dispatch, smartGreenBondContract) {
@@ -12,14 +13,21 @@ function dispatchSetContract(dispatch, smartGreenBondContract) {
 }
 
 export function setContract(defaultAccount) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const { web3Provider } = getState().provider
     const SmartGreenBondContract = TruffleContract(SmartGreenBond)
+    let deployedContract
 
     SmartGreenBondContract.setProvider(web3Provider.currentProvider)
     SmartGreenBondContract.defaults({ from: defaultAccount })
 
-    dispatchSetContract(dispatch, SmartGreenBondContract)
+    if (PRODUCTION) {
+      deployedContract = await SmartGreenBondContract.at(appConfig.SMARTGREENBOND_ADDRESS_ROPSTEN)
+    } else {
+      deployedContract = await SmartGreenBondContract.deployed()
+    }
+
+    dispatchSetContract(dispatch, deployedContract)
   }
 }
 
@@ -33,8 +41,7 @@ function dispatchMintBond(dispatch, transaction) {
 }
 
 async function mint(SmartGreenBondContract, buyerAddress, bondsAmount) {
-  const contract = await SmartGreenBondContract.deployed()
-  const result = contract.mintBond(buyerAddress, bondsAmount)
+  const result = SmartGreenBondContract.mintBond(buyerAddress, bondsAmount)
 
   const transaction = (result !== null) ? result : null
   return transaction
@@ -63,8 +70,7 @@ function dispatchTotalDebtOwed(dispatch, totalDebtOwed) {
 }
 
 async function callGetTotalDebtOwed(SmartGreenBondContract) {
-  const contract = await SmartGreenBondContract.deployed()
-  const totalDebtOwed = contract.getTotalOwed()
+  const totalDebtOwed = SmartGreenBondContract.getTotalOwed()
   return totalDebtOwed
 }
 
@@ -92,12 +98,11 @@ export function payTotalDebt() {
     const { smartGreenBondContract, totalDebtOwed } = getState().contract
     const { ethAccount } = getState().account
     const { web3Provider } = getState().provider
-    const contract = await smartGreenBondContract.deployed()
 
     if (totalDebtOwed > 0) {
       const transaction = await web3Provider.eth.sendTransaction({
         from: ethAccount,
-        to: contract.address,
+        to: smartGreenBondContract.address,
         value: web3Provider.utils.toWei(totalDebtOwed.toString(), 'ether')
       })
 
