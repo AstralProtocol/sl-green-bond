@@ -46,34 +46,37 @@ async function getInfoOnFFS() {
   }
 }
 
-async function loadTheDataToFFS(filePath) {
-  try {
-    // get wallet addresses associated with your FFS instance
-    const { addrsList } = await pow.ffs.addrs();
+async function loadTheDataToFFS(filePath){
 
-    // 3) Get use the file path to import the file and cache
-    const buffer = fs.readFileSync(filePath);
-    const { cid } = await pow.ffs.stage(buffer);
-    console.log(buffer);
-    console.log(cid);
+    try{
+        // get wallet addresses associated with your FFS instance
+        const { addrsList } = await pow.ffs.addrs()
+        
+        // 3) Get use the file path to import the file and cache
+        const buffer = fs.readFileSync(filePath);
+        const { cid } = await pow.ffs.stage(buffer);
+        console.log(buffer);
+        console.log(cid);
 
-    // 4) store the Data in the FFS instance. We need to save the auth toke nto retrieve it again
-    const { jobId } = await pow.ffs.pushStorageConfig(cid);
-
-    console.log("The Job ID: " + jobId);
-  } catch (error) {
-    console.log(error);
-  }
+        // 4) store the Data in the FFS instance. We need to save the auth toke nto retrieve it again
+        const { jobId } = await pow.ffs.pushStorageConfig(cid);
+        
+        console.log("The Job ID: " + jobId);
+    }
+    catch(error){
+        console.log(error);
+    }
+    
 }
 
-// Runs the script
-async function startScript() {
-  try {
-    await bindAuthToken();
-    await loadTheDataToFFSMacroFunction();
-  } catch (error) {
-    console.log(error);
-  }
+// Runs the script 
+async function startScript(){
+    try{
+        await bindAuthToken();
+        await loadTheDataToFFSMacroFunction();
+    }catch(error){
+        console.log(error);
+    }    
 }
 
 // The start script:
