@@ -7,45 +7,43 @@ const pow = power.createPow({ host });
 console.log(pow);
 
 async function bindAuthToken() {
-    try{
-        const { token } = await pow.ffs.create(); // save this token for later use!\
-        console.log(token);
-        // sets the authToken to the powergate instance
-        pow.setToken(token);
-    }
-    catch(error){
-        console.log(error);
-    }
+  try {
+    const { token } = await pow.ffs.create(); // save this token for later use!\
+    console.log(token);
+    // sets the authToken to the powergate instance
+    pow.setToken(token);
+  } catch (error) {
+    console.log(error);
+  }
 }
-
 
 //const authToken = '3a5b27c3-9c9d-4d6c-9f82-9c612803ad92';
 // sets the authToken to the instance
 //pow.setToken(authToken)
 
 // get general info about your ffs instance
-async function loadTheDataToFFSMacroFunction(){
-    var num = ["03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"];
-    // Test File path 
-    for (var i = 0; i < num.length; i++){
-        const filePathBase = "./csv-nox/london-mapnox20" + num[i] + ".csv";
-        await loadTheDataToFFS(filePathBase);
-        await getInfoOnFFS();
-        console.log(filePathBase);
-    }
+async function loadTheDataToFFSMacroFunction() {
+  var num = ["03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"];
+  // Test File path
+  for (var i = 0; i < num.length; i++) {
+    const filePathBase = "./csv-nox/london-mapnox20" + num[i] + ".csv";
+    await loadTheDataToFFS(filePathBase);
+    await getInfoOnFFS();
+    console.log(filePathBase);
+  }
 }
 
 /**
  *  @dev get general info about your ffs instance
- * */ 
-async function getInfoOnFFS(){
-    try{
-        const { info } = await pow.ffs.info();
-        console.log(info);
-    }
-    catch(error){
-        console.log(error);
-    } 
+ * */
+
+async function getInfoOnFFS() {
+  try {
+    const { info } = await pow.ffs.info();
+    console.log(info);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function loadTheDataToFFS(filePath){
@@ -84,9 +82,6 @@ async function startScript(){
 // The start script:
 startScript();
 //console.log("The Auth Token for this instance is " + tokenForThisInstance);
-console.log("Save the token to retrieve these files later and re-access this instance of Powergate");
-
-
-
-
-
+console.log(
+  "Save the token to retrieve these files later and re-access this instance of Powergate"
+);
