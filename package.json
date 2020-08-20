@@ -10,6 +10,7 @@
     "start-server-ganache": "node ./backend/server-ganache.js",
     "start-server-powergate-ganache": "node ./backend/server-powergate-ganache.js",
     "start-cron": "node ./backend/cron.js",
+    "load-powergate-data": "node ./backend/powergate/storedata.js",
     "ganache": "ganache-cli -h 0.0.0.0 -p 8545 -d -b 3 -i 333",
     "truffle": "truffle compile --all && truffle migrate --network development --reset",
     "mythx": "truffle run verify",
