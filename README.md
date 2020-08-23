@@ -16,23 +16,26 @@ Prerequisites:
 - Docker Desktop and Docker Compose
 - Golang
 
-Instalation:
+Instalation (more in depth in https://docs.textile.io/powergate/localnet/):
 
-More in depth in https://docs.textile.io/powergate/localnet/
 - `git clone git@github.com:textileio/powergate.git`
 - `cd powergate/docker`
 - `BIGSECTORS=true make localnet`
+
 If there are errors at this point, such as "powd/main.go:66 starting server: connecting to lotus node: resolving dns: lookup lotus on 127.0.0.11:53: no such host
-localnet_powergate_1 exited with code 1" OR SIGINT errors, you should try to build the lotus image by yourself
+localnet_powergate_1 exited with code 1" OR SIGINT errors, you should try to build the lotus image by yourself:
+
 - `git clone https://github.com/textileio/lotus-devnet.git`
 - `git checkout ntwk-calibration-x.x.x` (substitute x x x for the latest release branch)
 - `docker build -t my-local-devnet .`
 - `In the Powergate repo, replace in docker/docker-compose-localdevnet.yaml, the textile/local-devnet:.. for my-local-devnet.`
 
 When complete, you will have a fully functional Powergate (powd), a Lotus localnet, and an IPFS node wired correctly together to start using.
-To install the CLI
+To install the CLI:
+
 - `make build-pow`
 - Check the instalation with `pow --help`
+
 
 ### Description
 
