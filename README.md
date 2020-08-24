@@ -17,6 +17,7 @@ Prerequisites:
 - Golang
 
 Instalation (more in depth in https://docs.textile.io/powergate/localnet/):
+
 - `git clone git@github.com:textileio/powergate.git`
 - `cd powergate/docker`
 - `BIGSECTORS=true make localnet`
