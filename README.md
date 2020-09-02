@@ -1,4 +1,4 @@
-# Smart Green Bond
+# Sustainability-Linked Green Bond
 
 ### How to start with Powergate
 
