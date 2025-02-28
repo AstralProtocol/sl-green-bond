@@ -1,5 +1,7 @@
 # Sustainability-Linked Green Bond
 
+**This repository contains a demo project developed a few years ago as an exploration of blockchain-enabled spatial finance. While the project is no longer actively maintained, we’ve kept the code available as a reference for those interested in its architecture, methodologies, or implementation details. It may still serve as a useful learning resource, but note that dependencies and frameworks may be outdated.**
+
 ### How to start with Powergate
 
 How to deploy locally to ganache (be sure to have ganache-cli installed globally)
